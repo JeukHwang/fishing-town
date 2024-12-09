@@ -1,9 +1,41 @@
-import { NestFactory } from '@nestjs/core';
-import type { NestExpressApplication } from '@nestjs/platform-express';
-import { AppModule } from './app.module';
+import { Logger, LogLevel, ValidationPipe } from "@nestjs/common";
+import { HttpAdapterHost, NestFactory } from "@nestjs/core";
+import * as cookieParser from "cookie-parser";
+import { AppModule } from "./app.module";
+import { AllExceptionsFilter } from "./util/exception.filter";
+import $V from "./util/variable";
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  await app.listen(process.env.PORT || 3000);
+  const logLevels: LogLevel[] = $V.isProduction
+    ? ["error", "warn", "log"]
+    : ["error", "warn", "log", "debug", "verbose"];
+  const app = await NestFactory.create(AppModule, {
+    logger: logLevels,
+  });
+
+  app.use(cookieParser());
+  app.enableCors({
+    // Never use trailing slashes in the origin URL to prevent CORS issues
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        "http://localhost:5173", // Frontend development server
+        "https://fishing-island.jeuk.io", // Frontend production server
+      ];
+
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true); // Allow the origin
+      } else {
+        callback(new Error("Not allowed by CORS")); // Block the origin
+      }
+    },
+    credentials: true,
+  });
+  app.useGlobalPipes(new ValidationPipe({ transform: true }));
+  app.useGlobalFilters(new AllExceptionsFilter(app.get(HttpAdapterHost)));
+
+  await app.listen($V.PORT);
+  if (!$V.isProduction) {
+    Logger.debug(`http://localhost:${$V.PORT}`, "BOOTSTRAP");
+  }
 }
 bootstrap();
