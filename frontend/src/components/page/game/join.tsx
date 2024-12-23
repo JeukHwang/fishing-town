@@ -109,7 +109,10 @@ export function Join() {
   });
 
   const toggleSection = (section: string) => {
-    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
+    setExpandedSections((prev) => ({
+      ...prev,
+      [section]: !prev[section as keyof typeof prev],
+    }));
   };
 
   return (
@@ -261,7 +264,9 @@ export function Join() {
                 >
                   {section.charAt(0).toUpperCase() +
                     section.slice(1).replace(/([A-Z])/g, " $1")}
-                  {expandedSections[section] ? (
+                  {expandedSections[
+                    section as keyof typeof expandedSections
+                  ] ? (
                     <ChevronUpIcon className="h-4 w-4" />
                   ) : (
                     <ChevronDownIcon className="h-4 w-4" />

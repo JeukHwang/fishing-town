@@ -13,6 +13,15 @@
     "rootDir": "./",
     "baseUrl": "./",
     "skipLibCheck": true,
-    "incremental": true
+    "incremental": true,
+    /* Custom */
+    "paths": {
+      // "@/*": [
+      //   "./src/*"
+      // ],
+      "@core/*": [
+        "../core/*"
+      ],
+    }
   }
 }

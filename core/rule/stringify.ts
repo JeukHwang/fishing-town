@@ -7,6 +7,7 @@ import {
   ShipOwnership,
   ShipUsage,
   TownRule,
+  townRuleKey,
 } from "./type";
 import { parseFraction } from "./util";
 
@@ -14,42 +15,16 @@ type Stringify<T> = {
   [K in keyof T]: string;
 };
 
-type StringifiedPolitics = Stringify<Politics>;
-
-type StringifiedShipOwnership = Stringify<ShipOwnership>;
-
-type StringifiedShipUsage<T extends ShipUsage> =
-  T["shareFishingPlan"] extends true
-    ? {
-        maxIndividualShipsPerTurn: string;
-        maxIndividualShipsOnSameTilePerTurn: string;
-        shareRemainingFish: string;
-        shareFishingPlan: string;
-      }
-    : {
-        maxIndividualShipsPerTurn: string;
-        maxIndividualShipsOnSameTilePerTurn: string;
-        shareRemainingFish: string;
-        shareFishingPlan: string;
-        maxTotalShipsOnSameTilePerTurn: string;
-      };
-
-type StringifiedFeeCollection = Stringify<FeeCollection>;
-
-type StringifiedFeeUsage = Stringify<FeeUsage>;
-
 type StringifiedTownRule = {
   [K in keyof TownRule]: Stringify<TownRule[K]>;
 };
-
-type StringifiedMembershipCondition = Stringify<MembershipCondition>;
 
 type StringifiedClubRule = {
   [K in keyof ClubRule]: Stringify<ClubRule[K]>;
 };
 
 class RuleEnglishStringify {
-  static Politics(politics: Politics): StringifiedPolitics {
+  static Politics(politics: Politics): Stringify<Politics> {
     const { voteRatio, approvalRatio } = politics;
     return {
       voteRatio: `All village decisions are only passed if (yes+no)/total ≥ ${voteRatio}.`,
@@ -57,7 +32,7 @@ class RuleEnglishStringify {
     };
   }
 
-  static ShipOwnership(shipOwnership: ShipOwnership): StringifiedShipOwnership {
+  static ShipOwnership(shipOwnership: ShipOwnership): Stringify<ShipOwnership> {
     const { maxTotalShips, maxIndividualShips } = shipOwnership;
     return {
       maxTotalShips:
@@ -71,14 +46,15 @@ class RuleEnglishStringify {
     };
   }
 
-  static ShipUsage<T extends ShipUsage>(shipUsage: T): StringifiedShipUsage<T> {
+  static ShipUsage(shipUsage: ShipUsage): Stringify<ShipUsage> {
     const {
       maxIndividualShipsPerTurn,
       maxIndividualShipsOnSameTilePerTurn,
       shareRemainingFish,
       shareFishingPlan,
+      maxTotalShipsOnSameTilePerTurn,
     } = shipUsage;
-    const common = {
+    return {
       maxIndividualShipsPerTurn:
         maxIndividualShipsPerTurn !== "Infinity"
           ? `Villagers can deploy a maximum of ${maxIndividualShipsPerTurn} boats on the same tile in one turn.`
@@ -93,21 +69,14 @@ class RuleEnglishStringify {
       shareFishingPlan: shareFishingPlan
         ? `All villagers must share in advance the area they plan to fish.`
         : ``,
+      maxTotalShipsOnSameTilePerTurn:
+        shareFishingPlan && maxTotalShipsOnSameTilePerTurn !== "Infinity"
+          ? `Villagers can deploy a maximum of ${maxTotalShipsOnSameTilePerTurn} boats on the same tile in one turn.`
+          : "",
     };
-    if (shareFishingPlan) {
-      return {
-        ...common,
-        maxTotalShipsOnSameTilePerTurn:
-          shipUsage.maxTotalShipsOnSameTilePerTurn !== "Infinity"
-            ? `Villagers can deploy a maximum of ${shipUsage.maxTotalShipsOnSameTilePerTurn} boats on the same tile in one turn.`
-            : "",
-      };
-    } else {
-      return common;
-    }
   }
 
-  static FeeCollection(feeCollection: FeeCollection): StringifiedFeeCollection {
+  static FeeCollection(feeCollection: FeeCollection): Stringify<FeeCollection> {
     const { taxRate, collectFromResidents } = feeCollection;
     return {
       taxRate:
@@ -120,7 +89,7 @@ class RuleEnglishStringify {
     };
   }
 
-  static FeeUsage(feeUsage: FeeUsage): StringifiedFeeUsage {
+  static FeeUsage(feeUsage: FeeUsage): Stringify<FeeUsage> {
     const { survivalGrant, joinCost, leaveCost, distributeRemaining } =
       feeUsage;
     return {
@@ -142,19 +111,37 @@ class RuleEnglishStringify {
     };
   }
 
-  static TownRule(townRule: TownRule): StringifiedTownRule {
-    return {
+  static TownRule(townRule: TownRule, simplify: boolean): StringifiedTownRule {
+    const object = {
       politics: this.Politics(townRule.politics),
       shipOwnership: this.ShipOwnership(townRule.shipOwnership),
       shipUsage: this.ShipUsage(townRule.shipUsage),
       feeCollection: this.FeeCollection(townRule.feeCollection),
       feeUsage: this.FeeUsage(townRule.feeUsage),
     };
+    if (simplify) {
+      return Object.fromEntries(
+        Object.entries(object)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          .filter(([_, categoryValue]) =>
+            Object.values(categoryValue).some((v) => v !== "")
+          )
+          .map(([key, value]) => [
+            key,
+            Object.fromEntries(
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
+              Object.entries(value).filter(([_, v]) => v !== "")
+            ),
+          ])
+      ) as StringifiedTownRule;
+    } else {
+      return object;
+    }
   }
 
   static MembershipCondition(
     membershipCondition: MembershipCondition
-  ): StringifiedMembershipCondition {
+  ): Stringify<MembershipCondition> {
     const { minIndividualShips, maxIndividualShips } = membershipCondition;
     return {
       minIndividualShips:
@@ -179,7 +166,7 @@ class RuleEnglishStringify {
 
   static Combine(
     stringifiedRule: StringifiedTownRule | StringifiedClubRule,
-    simplify = false
+    simplify: boolean
   ): string {
     let string = "";
     if (simplify) {
@@ -208,16 +195,65 @@ class RuleEnglishStringify {
     }
     return string;
   }
+
+  static Diff(
+    from: TownRule,
+    to: TownRule,
+    simplify: boolean
+  ): Record<
+    keyof TownRule,
+    Record<
+      string,
+      { type: "added" | "deleted" | "updated" | "unchanged"; value: string }
+    >
+  > {
+    const merge: TownRule = Object.fromEntries(
+      townRuleKey.map((key) => [key, { ...from[key], ...to[key] }])
+    ) as TownRule;
+
+    const fromRule = RuleEnglishStringify.TownRule(from, true);
+    const toRule = RuleEnglishStringify.TownRule(to, true);
+
+    const diffRule = {} as Record<
+      keyof TownRule,
+      Record<
+        string,
+        { type: "added" | "deleted" | "updated" | "unchanged"; value: string }
+      >
+    >;
+
+    for (const [category, categoryValue] of Object.entries(
+      RuleEnglishStringify.TownRule(merge, false)
+    ) as [keyof TownRule, Record<string, string>][]) {
+      const subDiffRule: [
+        string,
+        { type: "added" | "deleted" | "updated" | "unchanged"; value: string }
+      ][] = [];
+      for (const key of Object.keys(categoryValue)) {
+        const fromValue = (fromRule[category] as Record<string, string>)?.[key];
+        const toValue = (toRule[category] as Record<string, string>)?.[key];
+        const existFromString = fromValue !== undefined && fromValue !== "";
+        const existToString = toValue !== undefined && toValue !== "";
+
+        if (!existFromString && existToString) {
+          subDiffRule.push([key, { type: "added", value: toValue }]);
+        } else if (existFromString && !existToString) {
+          subDiffRule.push([key, { type: "deleted", value: fromValue }]);
+        } else if (existFromString && existToString) {
+          if (fromValue !== toValue) {
+            subDiffRule.push([key, { type: "updated", value: toValue }]);
+          } else if (!simplify) {
+            subDiffRule.push([key, { type: "unchanged", value: toValue }]);
+          }
+        }
+      }
+      if (subDiffRule.length > 0) {
+        diffRule[category as keyof TownRule] = Object.fromEntries(subDiffRule);
+      }
+    }
+    return diffRule;
+  }
 }
 
 export { RuleEnglishStringify };
-export type {
-  StringifiedClubRule,
-  StringifiedFeeCollection,
-  StringifiedFeeUsage,
-  StringifiedMembershipCondition,
-  StringifiedPolitics,
-  StringifiedShipOwnership,
-  StringifiedShipUsage,
-  StringifiedTownRule,
-};
+export type { StringifiedClubRule, StringifiedTownRule };

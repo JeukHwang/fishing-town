@@ -19,28 +19,12 @@ import {
 import Section from "@/components/atom/section";
 import TownBadge from "@/components/atom/tag";
 import { LockIcon, UserIcon } from "lucide-react";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export function Join2() {
-  const navigate = useNavigate();
-
-  const [expandedSections, setExpandedSections] = useState({
-    politics: true,
-    shipOwnership: false,
-    shipUsage: false,
-    collectingFees: false,
-    spendingFees: false,
-  });
-
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev) => ({ ...prev, [section]: !prev[section] }));
-  };
-
   return (
     <div className="min-h-screen bg-white flex flex-col">
       <div className="w-full p-8 bg-white border-b border-border flex items-center justify-end gap-6">
-        <iconify-icon icon="mdi:marble" width={40} height={40}></iconify-icon>
+        {/* <iconify-icon icon="mdi:marble" width={40} height={40}></iconify-icon> */}
         <div className="text-[#1e1e1e] text-3xl font-['Lobster']">
           Fishing Island
         </div>

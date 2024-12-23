@@ -3,7 +3,7 @@ import { BadRequestException, Injectable } from "@nestjs/common";
 import { Prisma, type User } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { PrismaService } from "src/prisma/prisma.service";
-import type { CreateDto } from "./dto/create.dto";
+import type { CreateDto } from "./user.dto";
 
 export type UserProfile = Pick<User, "id" | "email" | "name">;
 export const toUserProfile = (user: User): UserProfile => ({

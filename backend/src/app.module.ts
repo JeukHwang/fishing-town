@@ -7,9 +7,10 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { TownModule } from "./town/town.module";
 import { UserModule } from "./user/user.module";
 import { LoggerMiddleware } from "./util/logger.middleware";
+import { GameModule } from './game/game.module';
 
 @Module({
-  imports: [PrismaModule, TownModule, PlayerModule, AuthModule, UserModule],
+  imports: [PrismaModule, TownModule, PlayerModule, AuthModule, UserModule, GameModule],
   providers: [{ provide: APP_GUARD, useClass: JwtAccessGuard }],
 })
 export class AppModule {

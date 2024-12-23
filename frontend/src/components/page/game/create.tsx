@@ -1,5 +1,6 @@
 "use client";
 
+import Profile from "@/components/atom/profile";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -9,51 +10,327 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Leaf, RotateCcw, Turtle, Wind } from "lucide-react";
-import { useState } from "react";
+import { Ellipsis, RotateCcw } from "lucide-react";
+import { PropsWithChildren, useState } from "react";
 import { Layout } from "../layout/layoutHeader";
 
+import { TypographyH4, TypographyMuted } from "@/components/atom/typography";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { Switch } from "@/components/ui/switch";
+import {
+  Cloud,
+  CreditCard,
+  Github,
+  Keyboard,
+  LifeBuoy,
+  LogOut,
+  Mail,
+  MessageSquare,
+  Plus,
+  PlusCircle,
+  Settings,
+  User,
+  UserPlus,
+  Users,
+} from "lucide-react";
+
+import RuleCard from "@/components/atom/ruleCard";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { defaultTownRule } from "@/core/rule/default";
+
+type Props = object;
+
+function RulePreview() {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="w-full mt-4" variant="outline">
+          Preview
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>Rule preview</DialogTitle>
+          <DialogDescription>Preview</DialogDescription>
+        </DialogHeader>
+        <RuleCard rule={defaultTownRule.leaf()} simplify={true} />
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter>
+        {/* <DialogHeader>
+          <DialogTitle>Edit profile</DialogTitle>
+          <DialogDescription>
+            Make changes to your profile here. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input
+              id="name"
+              defaultValue="Pedro Duarte"
+              className="col-span-3"
+            />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="username" className="text-right">
+              Username
+            </Label>
+            <Input
+              id="username"
+              defaultValue="@peduarte"
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit">Save changes</Button>
+        </DialogFooter> */}
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function DropdownMenuDemo({ children }: PropsWithChildren<Props>) {
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        {children}
+        {/* <Button variant="outline">Open</Button> */}
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="gap-2">
+            <User size={16} />
+            <span>Profile</span>
+            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="gap-2">
+            <CreditCard size={16} />
+            <span>Billing</span>
+            <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="gap-2">
+            <Settings size={16} />
+            <span>Settings</span>
+            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <DropdownMenuItem className="gap-2">
+            <Keyboard size={16} />
+            <span>Keyboard shortcuts</span>
+            <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+          </DropdownMenuItem>
+          <AlertDialogDemo>
+            <DropdownMenuItem className="gap-2">
+              <>
+                <LogOut size={16} />
+                <span>Kick</span>
+                <DropdownMenuShortcut>⌘K</DropdownMenuShortcut>
+              </>
+            </DropdownMenuItem>
+          </AlertDialogDemo>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuGroup>
+          <DropdownMenuItem className="gap-2">
+            <Users size={16} />
+            <span>Team</span>
+          </DropdownMenuItem>
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger className="gap-2">
+              <UserPlus size={16} />
+              <span>Invite users</span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuItem className="gap-2">
+                  <Mail size={16} />
+                  <span>Email</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="gap-2">
+                  <MessageSquare size={16} />
+                  <span>Message</span>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="gap-2">
+                  <PlusCircle size={16} />
+                  <span>More...</span>
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+          <DropdownMenuItem className="gap-2">
+            <Plus size={16} />
+            <span>New Team</span>
+            <DropdownMenuShortcut>⌘+T</DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="gap-2">
+          <Github size={16} />
+          <span>GitHub</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem className="gap-2">
+          <LifeBuoy size={16} />
+          <span>Support</span>
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled className="gap-2">
+          <Cloud size={16} />
+          <span>API</span>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem className="gap-2">
+          <LogOut size={16} />
+          <span>Log out</span>
+          <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+function AlertDialogDemo({ children }: PropsWithChildren<Props>) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction>Continue</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+}
 export function Create() {
   const [classModeEnabled, setClassModeEnabled] = useState(false);
 
   return (
     <Layout>
       <div className="container mx-auto p-4">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Game Information */}
-          <div className="space-y-4">
-            <div>
-              <h2 className="text-sm text-gray-500">Game for HAE 2024:</h2>
-              <p className="text-xl font-bold">Fishing Utopia</p>
-            </div>
-
-            <div>
-              <h3 className="text-sm font-semibold">Host</h3>
+          <div className="flex flex-col">
+            <TypographyH4>Invitation</TypographyH4>
+            <TypographyMuted className="text-muted-foreground mb-2">
+              Fishing Utopia: game for HAE 2024
+            </TypographyMuted>
+            <div className="mb-2">
+              <p className="text-sm font-bold">Host</p>
               <p>Hana Kim</p>
             </div>
-
-            <div>
-              <h3 className="text-sm font-semibold">Code</h3>
-              <p>QWEGVPOK</p>
-              <div className="mt-2 w-32 h-32 bg-gray-200"></div>
+            <div className="mb-2">
+              <p className="text-sm font-bold mb-1">Code</p>
+              <InputOTP maxLength={4} disabled value={"QWEP"}>
+                <InputOTPGroup>
+                  <InputOTPSlot index={0} />
+                  <InputOTPSlot index={1} />
+                  <InputOTPSlot index={2} />
+                  <InputOTPSlot index={3} />
+                </InputOTPGroup>
+              </InputOTP>
             </div>
-
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold">Class Mode</h3>
+            <div className="w-full flex flex-row justify-between items-center mb-2">
+              <div>
+                <p className="text-sm font-bold">Class Mode</p>
+                <p className="text-xs text-muted-foreground">
+                  Hide participants' choice of town
+                </p>
+              </div>
               <Switch
                 checked={classModeEnabled}
                 onCheckedChange={setClassModeEnabled}
               />
             </div>
-            <p className="text-xs text-gray-500">
-              Hide participants' choice of town
-            </p>
+          </div>
+
+          {/* Preparing Participants */}
+          <div className="flex flex-col">
+            <TypographyH4>Participant</TypographyH4>
+            <TypographyMuted className="text-muted-foreground mb-2">
+              Total 7 people
+            </TypographyMuted>
+            <div className="space-y-1">
+              {[
+                "Jeuk Hwang",
+                "Jake",
+                "Hate Turtle",
+                "Jeuk Hwang",
+                "Jeuk Hwang",
+                "Jeuk Hwang",
+                "Jeuk Hwang",
+              ].map((name, index) => (
+                <div
+                  key={index}
+                  className="flex items-center justify-between p-1 rounded text-sm"
+                >
+                  <Profile
+                    userProfile={{ id: "QE", name, email: "test@gmail.com" }}
+                  />
+                  <DropdownMenuDemo>
+                    <Button variant="ghost" size="icon">
+                      <Ellipsis />
+                    </Button>
+                  </DropdownMenuDemo>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Rules */}
-          <div className="space-y-4">
-            <h2 className="text-xl font-bold">Rule</h2>
+          <div className="flex flex-col">
+            <TypographyH4>Rule</TypographyH4>
+            <TypographyMuted className="text-muted-foreground mb-2">
+              Setting & Preview
+            </TypographyMuted>
             <div>
               <h3 className="text-sm font-semibold mb-1">Preset</h3>
               <Select>
@@ -109,82 +386,7 @@ export function Create() {
             </div>
 
             <Button className="w-full mt-4">Start</Button>
-          </div>
-
-          {/* Ready Participants */}
-          <div>
-            <h2 className="text-xl font-bold mb-2">Ready Participant</h2>
-            <p className="text-xs text-gray-500 mb-2">Total 37 people</p>
-            <div className="space-y-1">
-              {[
-                "Jeuk Hwang",
-                "Jake",
-                "Hate Turtle",
-                "Nupjuki23",
-                "Jeuk Hwang",
-                "Jeuk Hwang",
-                "Jeuk Hwang",
-              ].map((name, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between bg-gray-100 p-1 rounded text-sm"
-                >
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">
-                      JH
-                    </div>
-                    <span>{name}</span>
-                  </div>
-                  <Button variant="outline" size="sm" className="h-6 px-2">
-                    {index === 0 || index > 3 ? (
-                      <Wind className="h-3 w-3" />
-                    ) : index === 1 ? (
-                      <Turtle className="h-3 w-3" />
-                    ) : (
-                      <Leaf className="h-3 w-3" />
-                    )}
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Preparing Participants */}
-          <div>
-            <h2 className="text-xl font-bold mb-2">Preparing Participant</h2>
-            <p className="text-xs text-gray-500 mb-2">Total 7 people</p>
-            <div className="space-y-1">
-              {[
-                "Jeuk Hwang",
-                "Jake",
-                "Hate Turtle",
-                "Jeuk Hwang",
-                "Jeuk Hwang",
-                "Jeuk Hwang",
-                "Jeuk Hwang",
-              ].map((name, index) => (
-                <div
-                  key={index}
-                  className="flex items-center justify-between bg-gray-100 p-1 rounded text-sm"
-                >
-                  <div className="flex items-center space-x-2">
-                    <div className="w-6 h-6 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs">
-                      JH
-                    </div>
-                    <span>{name}</span>
-                  </div>
-                  {index === 3 && (
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="h-6 px-2 text-xs"
-                    >
-                      Kick out
-                    </Button>
-                  )}
-                </div>
-              ))}
-            </div>
+            <RulePreview />
           </div>
         </div>
       </div>

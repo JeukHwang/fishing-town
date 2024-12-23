@@ -1,6 +1,4 @@
 import Header from "@/components/atom/header";
-import { defaultTownRule } from "@/core/rule/default";
-import { RuleEnglishStringify } from "@/core/rule/stringify";
 import { PropsWithChildren } from "react";
 
 interface Props {
@@ -21,24 +19,3 @@ export function Layout({ className, children }: PropsWithChildren<Props>) {
     </div>
   );
 }
-
-console.log(
-  RuleEnglishStringify.Combine(
-    RuleEnglishStringify.TownRule(defaultTownRule.wind())
-  )
-);
-console.log(
-  RuleEnglishStringify.Combine(
-    RuleEnglishStringify.TownRule(defaultTownRule.leaf())
-  )
-);
-console.log(
-  RuleEnglishStringify.Combine(
-    RuleEnglishStringify.TownRule(defaultTownRule.turtle(10))
-  )
-);
-
-import { detailedDiff } from "deep-object-diff";
-
-console.log(detailedDiff(defaultTownRule.leaf(), defaultTownRule.turtle(10)));
-console.log(detailedDiff(defaultTownRule.turtle(10), defaultTownRule.leaf()));

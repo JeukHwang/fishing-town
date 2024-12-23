@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+const colors = require('tailwindcss/colors');
+
 export default {
     darkMode: ["class"],
     content: [
@@ -13,6 +16,7 @@ export default {
                 sm: 'calc(var(--radius) - 4px)'
             },
             colors: {
+                ...colors,
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
                 card: {
@@ -87,7 +91,7 @@ export default {
             wind: "#30B0C7",
             turtle: "#FFBF00",
             leaf: "#34C759",
-            island: "#808080",
+            island: "#2C2C2C",
         }
     },
     plugins: [require("tailwindcss-animate")],

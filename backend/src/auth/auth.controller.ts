@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { User } from "@prisma/client";
-import { CurrentUser } from "src/user/decorator/current.decorator";
+import { CurrentUser } from "src/user/user.decorator";
 import { UserProfile, toUserProfile } from "src/user/user.service";
 import { Public } from "./auth.decorator";
 import { RegisterDto } from "./auth.dto";

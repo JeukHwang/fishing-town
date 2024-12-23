@@ -45,26 +45,19 @@ type ShipUsage = {
    * @description Indicates if residents must share information about fish left on tiles they fished
    */
   shareRemainingFish: boolean;
-} & (
-  | {
-      /**
-       * @description Indicates if residents must share the area they will fish in advance
-       */
-      shareFishingPlan: false;
-    }
-  | {
-      /**
-       * @description Indicates if residents must share the area they will fish in advance
-       */
-      shareFishingPlan: true;
 
-      /**
-       * @description Maximum ships usable on the same tile per turn for the entire town
-       * @range Zero, positive integer, infinity
-       */
-      maxTotalShipsOnSameTilePerTurn: NumberOrInfinity;
-    }
-);
+  /**
+   * @description Indicates if residents must share the area they will fish in advance
+   */
+  shareFishingPlan: boolean;
+
+  /**
+   * @description Only applicable when `shareFishingPlan` is true
+   * @description Maximum ships usable on the same tile per turn for the entire town
+   * @range Zero, positive integer, infinity
+   */
+  maxTotalShipsOnSameTilePerTurn: NumberOrInfinity;
+};
 
 type FeeCollection = {
   /**
@@ -143,3 +136,23 @@ export type {
   ShipUsage,
   TownRule,
 };
+
+type TownRuleKey = keyof TownRule;
+
+const townRuleKey: TownRuleKey[] = [
+  "politics",
+  "shipOwnership",
+  "shipUsage",
+  "feeCollection",
+  "feeUsage",
+];
+
+type ClubRuleKey = keyof ClubRule;
+
+const clubRuleKey: ClubRuleKey[] = [
+  "politics",
+  "shipUsage",
+  "membershipCondition",
+];
+
+export { clubRuleKey, townRuleKey };

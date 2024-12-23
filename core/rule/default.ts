@@ -14,6 +14,7 @@ const defaultTown: TownRule = {
     maxIndividualShipsOnSameTilePerTurn: "Infinity",
     shareRemainingFish: false,
     shareFishingPlan: false,
+    maxTotalShipsOnSameTilePerTurn: "Infinity",
   },
   feeCollection: {
     taxRate: "0/1",

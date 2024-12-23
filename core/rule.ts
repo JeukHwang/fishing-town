@@ -1,10 +1,4 @@
-import {
-  defaultClub,
-  defaultTown,
-  leafTown,
-  turtleTown,
-  windTown,
-} from "./rule/default";
+import { defaultClubRule, defaultTownRule } from "./rule/default";
 import { ClubRule, TownRule } from "./rule/type";
 import {
   isFractionBetween0and1,
@@ -69,8 +63,7 @@ export function isValidClubRule(rule: ClubRule): boolean {
   return true;
 }
 
-console.assert(isValidTownRule(defaultTown));
-console.assert(isValidTownRule(windTown()));
-console.assert(isValidTownRule(turtleTown(1)));
-console.assert(isValidTownRule(leafTown()));
-console.assert(isValidClubRule(defaultClub));
+console.assert(isValidTownRule(defaultTownRule.wind()));
+console.assert(isValidTownRule(defaultTownRule.turtle(1)));
+console.assert(isValidTownRule(defaultTownRule.leaf()));
+console.assert(isValidClubRule(defaultClubRule));
