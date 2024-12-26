@@ -27,7 +27,7 @@ export class RuleFormatter {
 
   private apply(template: string, ...args: any[]): string {
     return template.replace(/\$\d/g, (match) => {
-      const index = parseInt(match[1]);
+      const index = parseInt(match.replace("$", ""));
       return args[index - 1].toString();
     });
   }
