@@ -1,5 +1,8 @@
 {
     "name": "@fishing-town/shared",
     "version": "0.0.0",
-    "main": "src/index.ts"
+    "main": "./src/index.ts",
+    "dependencies": {
+        "@types/react": "^18.3.18"
+    }
 }

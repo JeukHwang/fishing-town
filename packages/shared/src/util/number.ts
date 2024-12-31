@@ -14,7 +14,8 @@ export function parseFraction(fraction: Fraction): ParsedFraction | null {
   const isValid =
     Number.isInteger(numerator) &&
     Number.isInteger(denominator) &&
-    denominator > 0;
+    denominator > 0 &&
+    `${numerator}/${denominator}` === fraction;
   if (!isValid) return null;
   return { n: numerator, d: denominator };
 }

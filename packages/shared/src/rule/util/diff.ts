@@ -46,7 +46,7 @@ export class RuleDiff {
     from: TownRule,
     to: TownRule,
     language: LanguageType,
-    simplify: boolean
+    mode: "all" | "to" | "diff"
   ): RulePatch<TownRule> {
     const reader = new RuleFormatter(language);
 
@@ -82,8 +82,12 @@ export class RuleDiff {
         } else if (existFromString && existToString) {
           if (fromValue !== toValue) {
             subDiffRule.push([key, { type: "updated", value: toValue }]);
-          } else if (!simplify) {
+          } else if (mode !== "diff") {
             subDiffRule.push([key, { type: "unchanged", value: toValue }]);
+          }
+        } else {
+          if (mode === "all") {
+            subDiffRule.push([key, { type: "unchanged", value: "" }]);
           }
         }
       }

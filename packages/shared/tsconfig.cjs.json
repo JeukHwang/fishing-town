@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "module": "CommonJS", // CJS 모듈 출력
+        "target": "ES2020", // CJS 출력의 자바스크립트 버전
+        "outDir": "./dist/cjs", // CJS 출력 디렉토리
+        "declaration": true, // 타입 정의 파일 생성
+        "declarationDir": "./dist/cjs/types", // 타입 정의 디렉토리
+        "esModuleInterop": true, // ESM 호환성
+        "skipLibCheck": true, // 라이브러리 체크 건너뜀
+        "strict": true // 엄격 모드
+    },
+    "include": [
+        "src/**/*"
+    ], // 포함할 파일
+    "exclude": [
+        "node_modules"
+    ] // 제외할 파일
+}
