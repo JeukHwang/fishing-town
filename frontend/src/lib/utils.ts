@@ -7,7 +7,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const domain = "http://localhost:3000";
+export const domain = "https://api.fishing-town.jeuk.io";
 
 export const defaultHeader = {
   headers: { "Content-Type": "application/json" },
