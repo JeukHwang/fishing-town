@@ -57,7 +57,7 @@ const isProduction = environmentVariable.NODE_ENV === "production";
 const $V = {
   ...environmentVariable,
   isProduction,
-  domain: isProduction ? "fishing-town.jeuk.io" : "localhost",
+  domain: isProduction ? "jeuk.io" : "localhost",
   isAdmin: (secret: string): boolean =>
     secret === environmentVariable.ADMIN_SECRET,
 };

@@ -28,6 +28,8 @@ async function bootstrap() {
         callback(new Error("Not allowed by CORS")); // Block the origin
       }
     },
+    /** @see https://github.com/expressjs/cors?tab=readme-ov-file#configuration-options */
+    methods: ["GET", "HEAD", "PUT", "PATCH", "POST", "DELETE", "OPTIONS"], // Allow default methods + OPTIONS for preflight
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
