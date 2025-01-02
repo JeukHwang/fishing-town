@@ -1,33 +1,17 @@
-import CategorySymbol from "@/components/atom/symbol";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Toggle } from "@/components/ui/toggle";
 import { camelToTitleCase } from "@/lib/utils";
-import {
-  DefaultRule,
-  RuleDescription,
-  RuleDiff,
-  RuleEnglishDescription,
-  RuleValidator,
-  TownRule,
-} from "@fishing-town/shared";
+import { RuleDescription } from "@fishing-town/shared";
 import {
   Fraction,
   isFractionBetween0and1,
   parseFraction,
 } from "@fishing-town/shared/src/util/number";
 import clsx from "clsx";
-import { Infinity, RotateCcw } from "lucide-react";
-import { useCallback, useState } from "react";
-import { Textarea } from "../ui/textarea";
+import { Infinity } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 
 type RawValueType<T> = T extends infer U
   ? U extends "Boolean"
@@ -111,6 +95,15 @@ function CustomInput<T extends RuleDescription["inputType"]>({
     [onChange, validateValue]
   );
 
+  useEffect(() => {
+    if (value !== displayValue) {
+      handleChange(
+        (type === "Boolean" ? value : value.toString()) as RawValueType<T>
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [value, type, handleChange]);
+
   switch (type) {
     case "Fraction":
       return (
@@ -141,7 +134,22 @@ function CustomInput<T extends RuleDescription["inputType"]>({
               }}
             />
           )}
-          <Button
+          <Toggle
+            variant="outline"
+            pressed={displayValue === "Infinity"}
+            onClick={() => {
+              if (displayValue === "Infinity") {
+                console.log(typeof lastNonInfinityValue, lastNonInfinityValue);
+                handleChange(lastNonInfinityValue as RawValueType<T>);
+              } else {
+                setLastNonInfinityValue(displayValue as string);
+                handleChange("Infinity" as RawValueType<T>);
+              }
+            }}
+          >
+            <Infinity />
+          </Toggle>
+          {/* <Button
             variant={displayValue === "Infinity" ? "default" : "outline"}
             size="icon"
             onClick={() => {
@@ -155,7 +163,7 @@ function CustomInput<T extends RuleDescription["inputType"]>({
             }}
           >
             <Infinity />
-          </Button>
+          </Button> */}
         </>
       );
     case "Number":
@@ -190,7 +198,12 @@ interface RuleSettingProps {
   onChange: (value: unknown) => void;
 }
 
-function RuleInput({ title, desc, value, onChange }: RuleSettingProps) {
+export default function RuleInput({
+  title,
+  desc,
+  value,
+  onChange,
+}: RuleSettingProps) {
   return (
     <Alert className="flex items-center justify-between space-x-4  p-4">
       <div>
@@ -205,145 +218,5 @@ function RuleInput({ title, desc, value, onChange }: RuleSettingProps) {
         />
       </div>
     </Alert>
-  );
-}
-
-interface Props {
-  from: TownRule;
-  to: TownRule;
-  mode: "all" | "to" | "diff";
-}
-
-function RuleDiffCard2({ from, to, mode }: Props) {
-  return (
-    <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center">
-      <Accordion type="single" collapsible className="w-full">
-        {Object.entries(RuleDiff.TownRule(from, to, "en", mode)).map(
-          ([category, categoryValue]) => (
-            <AccordionItem key={category} value={category}>
-              <AccordionTrigger>
-                <div className="flex items-center gap-2">
-                  <CategorySymbol category={category as keyof TownRule} />
-                  {camelToTitleCase(category)}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid w-full items-center gap-4">
-                  {Object.entries(categoryValue).map(
-                    ([key, { type, value }]) => {
-                      const className = clsx(
-                        type === "added" && "border-green-600 text-green-600",
-                        type === "deleted" && "border-red-600 text-red-600",
-                        type === "updated" && "border-amber-600 text-amber-600"
-                      );
-                      return (
-                        <Alert key={key} className={className}>
-                          <AlertTitle>{camelToTitleCase(key)}</AlertTitle>
-                          <AlertDescription>{value}</AlertDescription>
-                        </Alert>
-                      );
-                    }
-                  )}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          )
-        )}
-      </Accordion>
-    </div>
-  );
-}
-
-export function Proposal() {
-  const [title, setTitle] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
-
-  const initRule = () => DefaultRule.LeafTown();
-  const [rule, setRule] = useState<TownRule>(initRule());
-
-  const ruleDesc = RuleEnglishDescription.TownRule();
-  const ruleDiff = Object.entries(
-    RuleDiff.TownRule(
-      DefaultRule.LeafTown(),
-      DefaultRule.TurtleTown(10),
-      "en",
-      false
-    )
-  );
-
-  return (
-    <>
-      <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center">
-        <div className="w-[320px] flex flex-col gap-4">
-          <div>
-            <Label htmlFor="name">Title</Label>
-            <Input
-              id="title"
-              onChange={(e) => {
-                setTitle(e.target.value);
-              }}
-            />
-          </div>
-          <div>
-            <Label htmlFor="name">Name</Label>
-            <Textarea
-              id="name"
-              onChange={(e) => {
-                setDesc(e.target.value);
-              }}
-            />
-          </div>
-        </div>
-        <Accordion type="single" collapsible className="w-full">
-          {Object.entries(ruleDesc).map(([category, categoryValue]) => (
-            <AccordionItem key={category} value={category}>
-              <AccordionTrigger>
-                <div className="flex items-center gap-2">
-                  <CategorySymbol category={category as keyof TownRule} />
-                  {camelToTitleCase(category)}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid w-full items-center gap-4">
-                  {Object.entries(categoryValue).map(([key]) => {
-                    return (
-                      <RuleInput
-                        key={key}
-                        title={camelToTitleCase(key)}
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                        desc={ruleDesc[category][key]}
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                        value={rule[category][key]}
-                        onChange={(value) => {
-                          const newRule = JSON.parse(
-                            JSON.stringify(rule)
-                          ) as TownRule;
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                          newRule[category][key] = value;
-                          if (RuleValidator.TownRule(newRule)) {
-                            console.log(`${category}.${key}: ${value}`);
-                            setRule(newRule);
-                          }
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => {
-            setRule(initRule());
-          }}
-        >
-          <RotateCcw />
-        </Button>
-      </div>
-      <RuleDiffCard2 from={initRule()} to={rule} mode={"to"} />
-    </>
   );
 }
