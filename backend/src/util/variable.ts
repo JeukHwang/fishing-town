@@ -20,7 +20,6 @@ const NODE_ENV = e<"production" | "development">("NODE_ENV", "production");
 
 /** @description Get env variable or generate random string for development */
 function eOrR(key: string, length: number): string {
-  if (NODE_ENV === "production") return e(key);
   const defaultValue = randomBytes(Math.ceil(length / 2))
     .toString("hex")
     .slice(0, length);
