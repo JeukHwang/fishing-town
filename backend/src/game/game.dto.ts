@@ -1,5 +1,5 @@
-import { townType } from "@fishing-town/shared";
 import { IsIn, IsJSON, IsOptional, IsString } from "class-validator";
+import { townType } from "../core/index.js";
 
 export class UpdateSettingDto {
   @IsJSON()
