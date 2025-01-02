@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { DefaultRule, RegionType } from "@fishing-town/shared";
 import { createBrowserRouter } from "react-router-dom";
 import { toast } from "sonner";
+import RuleTextCard from "./components/molecule/rule/preview";
 import Proposal from "./components/molecule/rule/proposal";
 import RuleCard from "./components/molecule/rule/ruleCard";
 import { Login } from "./components/page/auth/login";
@@ -21,6 +22,7 @@ import { Create } from "./components/page/game/create";
 import { Game } from "./components/page/game/game";
 import { Join } from "./components/page/game/join";
 import { Join2 } from "./components/page/game/join2";
+import { ScrollArea } from "./components/ui/scroll-area";
 
 const devRouter = [
   {
@@ -112,6 +114,16 @@ const devRouter = [
     element: (
       <LayoutCenter className="flex-row gap-10 p-10">
         <RuleCard rule={DefaultRule.WindTown()} simplify={true} />
+      </LayoutCenter>
+    ),
+  },
+  {
+    path: "/ruletext",
+    element: (
+      <LayoutCenter className="flex-row gap-10 p-10">
+        <ScrollArea className="h-1/2">
+          <RuleTextCard rule={DefaultRule.LeafTown()} simplify={true} />
+        </ScrollArea>
       </LayoutCenter>
     ),
   },

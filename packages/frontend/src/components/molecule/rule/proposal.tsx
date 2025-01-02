@@ -35,7 +35,7 @@ import {
 } from "@fishing-town/shared";
 import { Palette, RotateCcw, Scroll } from "lucide-react";
 import { useState } from "react";
-import Preview from "./preview";
+import RuleTextCard from "./preview";
 
 interface RuleProposalProps {
   title: string;
@@ -196,7 +196,7 @@ export default function Proposal(props: RuleProposalProps) {
                     <DialogContent className="sm:max-w-[500px]">
                       <DialogTitle>Preview Rule</DialogTitle>
                       <ScrollArea className="h-[500px] w-full">
-                        <Preview rule={rule} />
+                        <RuleTextCard rule={rule} />
                       </ScrollArea>
                     </DialogContent>
                   </Dialog>
