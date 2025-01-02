@@ -1,0 +1,6 @@
+[build]
+base_directory = "backend"
+command = "pnpm build"
+
+[run]
+command = "pnpm start"
