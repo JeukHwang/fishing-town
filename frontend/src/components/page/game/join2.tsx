@@ -26,7 +26,7 @@ export function Join2() {
       <div className="w-full p-8 bg-white border-b border-border flex items-center justify-end gap-6">
         {/* <iconify-icon icon="mdi:marble" width={40} height={40}></iconify-icon> */}
         <div className="text-[#1e1e1e] text-3xl font-['Lobster']">
-          Fishing Island
+          Fishing Town
         </div>
         <div className="basis-0 grow shrink flex items-center justify-end gap-2"></div>
         <div className="flex items-center justify-start gap-3">

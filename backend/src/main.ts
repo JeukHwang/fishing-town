@@ -19,7 +19,7 @@ async function bootstrap() {
     origin: (origin, callback) => {
       const allowedOrigins = [
         "http://localhost:5173", // Frontend development server
-        "https://fishing-island.jeuk.io", // Frontend production server
+        "https://fishing-town.jeuk.io", // Frontend production server
       ];
 
       if (!origin || allowedOrigins.includes(origin)) {

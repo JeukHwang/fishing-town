@@ -9,7 +9,7 @@ export function Landing() {
   return (
     <Layout>
       <div className="flex items-center gap-4">
-        <h1 className="text-7xl font-['Lobster']">Fishing Island</h1>
+        <h1 className="text-7xl font-['Lobster']">Fishing Town</h1>
       </div>
       <div className="flex flex-col gap-4">
         <Button className="w-full max-w-60" size="lg">

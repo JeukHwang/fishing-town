@@ -13,7 +13,7 @@ export default function Header() {
       <Link className="flex flex- gap-3" to="/">
         <RegionIcon type={"Island"} theme="light" variant="square" size={40} />
         <div className="text-[#1e1e1e] text-3xl font-['Lobster']">
-          Fishing Island
+          Fishing Town
         </div>
       </Link>
       <div className="basis-0 grow shrink flex items-center justify-end gap-2">
