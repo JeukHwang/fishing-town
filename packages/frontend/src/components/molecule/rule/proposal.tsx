@@ -27,7 +27,6 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { camelToTitleCase } from "@/lib/utils";
 import {
-  RuleDescription,
   RuleEnglishDescription,
   RuleValidator,
   TownRule,
@@ -35,7 +34,7 @@ import {
 } from "@fishing-town/shared";
 import { Palette, RotateCcw, Scroll } from "lucide-react";
 import { useState } from "react";
-import RuleTextCard from "./preview";
+import RuleTextCard from "./ruleTextCard";
 
 interface RuleProposalProps {
   title: string;
@@ -124,11 +123,10 @@ export default function Proposal(props: RuleProposalProps) {
                       <AccordionContent>
                         <div className="grid w-full items-center gap-4">
                           {(
-                            Object.entries(categoryValue) as [
-                              keyof typeof categoryValue,
-                              RuleDescription
-                            ][]
-                          ).map(([key, value]) => (
+                            Object.keys(
+                              categoryValue
+                            ) as (keyof typeof categoryValue)[]
+                          ).map((key) => (
                             <RuleInput
                               key={key}
                               title={camelToTitleCase(key)}
@@ -138,8 +136,9 @@ export default function Proposal(props: RuleProposalProps) {
                                 const newRule = JSON.parse(
                                   JSON.stringify(rule)
                                 ) as TownRule;
-                                newRule[category][key] = value;
+                                (newRule[category][key] as unknown) = value;
                                 if (RuleValidator.TownRule(newRule)) {
+                                  // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                                   console.log(`${category}.${key}: ${value}`);
                                   setRule(newRule);
                                 }
@@ -196,7 +195,7 @@ export default function Proposal(props: RuleProposalProps) {
                     <DialogContent className="sm:max-w-[500px]">
                       <DialogTitle>Preview Rule</DialogTitle>
                       <ScrollArea className="h-[500px] w-full">
-                        <RuleTextCard rule={rule} />
+                        <RuleTextCard rule={rule} simplify={false} />
                       </ScrollArea>
                     </DialogContent>
                   </Dialog>
