@@ -2,15 +2,14 @@ import RegionIcon, {
   RegionIconThemeType,
   RegionIconVariantType,
 } from "@/components/atom/icon";
-import RuleCard from "@/components/atom/ruleCard";
-import RuleDiffCard from "@/components/atom/ruleDiffCard";
+import RuleDiffCard from "@/components/molecule/rule/ruleDiffCard";
 import { LayoutCenter } from "@/components/page/layout/layoutCenter";
 import { Button } from "@/components/ui/button";
 import { DefaultRule, RegionType } from "@fishing-town/shared";
 import { createBrowserRouter } from "react-router-dom";
 import { toast } from "sonner";
-import RuleModifiableCard from "./components/atom/ruleModifiableCard";
-import Proposal from "./components/molecule/proposal";
+import Proposal from "./components/molecule/rule/proposal";
+import RuleCard from "./components/molecule/rule/ruleCard";
 import { Login } from "./components/page/auth/login";
 import { ResetPassword } from "./components/page/auth/reset-password";
 import { SignUp } from "./components/page/auth/signup";
@@ -24,29 +23,6 @@ import { Join } from "./components/page/game/join";
 import { Join2 } from "./components/page/game/join2";
 
 const devRouter = [
-  {
-    path: "/rule",
-    element: (
-      <LayoutCenter>
-        <RuleCard rule={DefaultRule.WindTown()} simplify={true} />
-        <RuleCard rule={DefaultRule.WindTown()} simplify={false} />
-      </LayoutCenter>
-    ),
-  },
-  {
-    path: "/rulediff",
-    element: (
-      <LayoutCenter>
-        <RuleCard rule={DefaultRule.LeafTown()} simplify={true} />
-        <RuleCard rule={DefaultRule.TurtleTown(10)} simplify={true} />
-        <RuleDiffCard
-          from={DefaultRule.LeafTown()}
-          to={DefaultRule.TurtleTown(10)}
-          mode={"all"}
-        />
-      </LayoutCenter>
-    ),
-  },
   {
     path: "/icon",
     element: (
@@ -98,17 +74,51 @@ const devRouter = [
     ),
   },
   {
+    path: "/rule",
+    element: (
+      <LayoutCenter className="flex-row gap-10 p-10">
+        <RuleCard rule={DefaultRule.WindTown()} simplify={true} />
+        <RuleCard rule={DefaultRule.WindTown()} simplify={false} />
+
+        <RuleCard rule={DefaultRule.LeafTown()} simplify={true} />
+        <RuleCard rule={DefaultRule.TurtleTown(10)} simplify={true} />
+      </LayoutCenter>
+    ),
+  },
+  {
+    path: "/rulediff",
+    element: (
+      <LayoutCenter className="flex-row gap-10 p-10">
+        <RuleDiffCard
+          from={DefaultRule.LeafTown()}
+          to={DefaultRule.TurtleTown(10)}
+          mode={"all"}
+        />
+        <RuleDiffCard
+          from={DefaultRule.LeafTown()}
+          to={DefaultRule.TurtleTown(10)}
+          mode={"to"}
+        />
+        <RuleDiffCard
+          from={DefaultRule.LeafTown()}
+          to={DefaultRule.TurtleTown(10)}
+          mode={"diff"}
+        />
+      </LayoutCenter>
+    ),
+  },
+  {
     path: "/ruleedit",
     element: (
-      <LayoutCenter>
-        <RuleModifiableCard rule={DefaultRule.WindTown()} simplify={true} />
+      <LayoutCenter className="flex-row gap-10 p-10">
+        <RuleCard rule={DefaultRule.WindTown()} simplify={true} />
       </LayoutCenter>
     ),
   },
   {
     path: "/proposal",
     element: (
-      <LayoutCenter>
+      <LayoutCenter className="p-10">
         <Proposal
           title="Community Guidelines Update: Comprehensive Rules for a Thriving Online Community"
           desc="This proposal aims to expand and refine our community guidelines, fostering a more inclusive, respectful, and productive environment for all members."

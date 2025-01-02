@@ -1,6 +1,6 @@
-import RuleDiffCard from "@/components/atom/ruleDiffCard";
-import RuleInput from "@/components/atom/rulesetting";
 import CategorySymbol from "@/components/atom/symbol";
+import RuleDiffCard from "@/components/molecule/rule/ruleDiffCard";
+import RuleInput from "@/components/molecule/rule/ruleInput";
 import {
   Accordion,
   AccordionContent,
@@ -29,13 +29,13 @@ import { camelToTitleCase } from "@/lib/utils";
 import {
   RuleDescription,
   RuleEnglishDescription,
-  RuleFormatter,
   RuleValidator,
   TownRule,
   TownRuleDescription,
 } from "@fishing-town/shared";
 import { Palette, RotateCcw, Scroll } from "lucide-react";
 import { useState } from "react";
+import Preview from "./preview";
 
 interface RuleProposalProps {
   title: string;
@@ -196,29 +196,7 @@ export default function Proposal(props: RuleProposalProps) {
                     <DialogContent className="sm:max-w-[500px]">
                       <DialogTitle>Preview Rule</DialogTitle>
                       <ScrollArea className="h-[500px] w-full">
-                        <div className="flex flex-col gap-4 pr-4">
-                          {Object.entries(
-                            new RuleFormatter("en").TownRule(rule, true)
-                          ).map(([category, categoryValue]) => (
-                            <div key={category}>
-                              <div className="flex items-center gap-2">
-                                <CategorySymbol
-                                  category={category as keyof TownRule}
-                                />
-                                <strong>{camelToTitleCase(category)}</strong>
-                              </div>
-                              {Object.entries(categoryValue).map(
-                                ([key, value]) => (
-                                  <div key={key}>
-                                    <strong>{camelToTitleCase(key)}</strong>
-                                    <br />
-                                    {value}
-                                  </div>
-                                )
-                              )}
-                            </div>
-                          ))}
-                        </div>
+                        <Preview rule={rule} />
                       </ScrollArea>
                     </DialogContent>
                   </Dialog>

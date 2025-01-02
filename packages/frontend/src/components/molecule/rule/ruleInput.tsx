@@ -35,7 +35,7 @@ type InputProp<T extends RuleDescription["inputType"]> = T extends infer U
   ? { type: U; value: ValueType<U>; onChange: (value: ValueType<U>) => void }
   : never;
 
-function CustomInput<T extends RuleDescription["inputType"]>({
+function MultiTypeInput<T extends RuleDescription["inputType"]>({
   type,
   value,
   onChange,
@@ -89,10 +89,13 @@ function CustomInput<T extends RuleDescription["inputType"]>({
       const validatedValue = validateValue(raw);
       const isValid = validatedValue !== null;
       setValid(isValid);
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      if (isValid) onChange(validatedValue as ValueType<T>);
+
+      if (isValid && validatedValue !== value) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        onChange(validatedValue as ValueType<T>);
+      }
     },
-    [onChange, validateValue]
+    [onChange, validateValue, value]
   );
 
   useEffect(() => {
@@ -129,7 +132,6 @@ function CustomInput<T extends RuleDescription["inputType"]>({
               step={1}
               value={displayValue as unknown as number}
               onChange={(e) => {
-                console.log(e.target.value);
                 handleChange(e.target.value as RawValueType<T>);
               }}
             />
@@ -139,7 +141,6 @@ function CustomInput<T extends RuleDescription["inputType"]>({
             pressed={displayValue === "Infinity"}
             onClick={() => {
               if (displayValue === "Infinity") {
-                console.log(typeof lastNonInfinityValue, lastNonInfinityValue);
                 handleChange(lastNonInfinityValue as RawValueType<T>);
               } else {
                 setLastNonInfinityValue(displayValue as string);
@@ -154,7 +155,6 @@ function CustomInput<T extends RuleDescription["inputType"]>({
             size="icon"
             onClick={() => {
               if (displayValue === "Infinity") {
-                console.log(typeof lastNonInfinityValue, lastNonInfinityValue);
                 handleChange(lastNonInfinityValue as RawValueType<T>);
               } else {
                 setLastNonInfinityValue(displayValue as string);
@@ -191,7 +191,7 @@ function CustomInput<T extends RuleDescription["inputType"]>({
   }
 }
 
-interface RuleSettingProps {
+interface RuleInputProps {
   title: string;
   desc: RuleDescription;
   value: unknown;
@@ -203,7 +203,7 @@ export default function RuleInput({
   desc,
   value,
   onChange,
-}: RuleSettingProps) {
+}: RuleInputProps) {
   return (
     <Alert className="flex items-center justify-between space-x-4  p-4">
       <div>
@@ -211,7 +211,7 @@ export default function RuleInput({
         <AlertDescription>{desc.content}</AlertDescription>
       </div>
       <div className="flex items-center space-x-2">
-        <CustomInput
+        <MultiTypeInput
           type={desc.inputType as "Boolean"} // Type-casting to avoid type error
           value={value as boolean} // Type-casting to avoid type error
           onChange={onChange}

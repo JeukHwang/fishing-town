@@ -52,7 +52,7 @@ import {
   Users,
 } from "lucide-react";
 
-import RuleCard from "@/components/atom/ruleCard";
+import RuleCard from "@/components/molecule/rule/ruleCard";
 import {
   AlertDialog,
   AlertDialogAction,
