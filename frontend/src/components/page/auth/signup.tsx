@@ -4,7 +4,7 @@ import { Label } from "@/components/ui/label";
 import { UserProfile } from "@/core";
 import { defaultHeader, domain } from "@/lib/utils";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { Layout } from "../layout/layoutHeader";
 
 export function SignUp() {

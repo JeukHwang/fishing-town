@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { useUserProfile } from "@/hooks/use-user";
 import { defaultHeader, domain } from "@/lib/utils";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import RegionIcon from "./icon";
 
 export default function Header() {

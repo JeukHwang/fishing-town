@@ -6,7 +6,7 @@ import RuleDiffCard from "@/components/molecule/rule/ruleDiffCard";
 import { LayoutCenter } from "@/components/page/layout/layoutCenter";
 import { Button } from "@/components/ui/button";
 import { DefaultRule, RegionType } from "@/core";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router";
 import { toast } from "sonner";
 import Proposal from "./components/molecule/rule/proposal";
 import RuleCard from "./components/molecule/rule/ruleCard";
