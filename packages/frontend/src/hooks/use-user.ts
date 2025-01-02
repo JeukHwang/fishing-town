@@ -1,5 +1,5 @@
+import { UserProfile } from "@/core";
 import { defaultHeader, domain } from "@/lib/utils";
-import { UserProfile } from "@fishing-town/shared";
 import { useEffect, useState } from "react";
 
 async function fetchUserProfile(): Promise<UserProfile | null> {

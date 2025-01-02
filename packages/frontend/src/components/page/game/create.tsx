@@ -73,7 +73,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { DefaultRule } from "@fishing-town/shared";
+import { DefaultRule } from "@/core";
 
 type Props = object;
 

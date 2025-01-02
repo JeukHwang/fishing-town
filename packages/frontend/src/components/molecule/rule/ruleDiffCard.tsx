@@ -5,8 +5,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { RuleDiff, TownRule } from "@/core";
 import { camelToTitleCase } from "@/lib/utils";
-import { RuleDiff, TownRule } from "@fishing-town/shared";
 import clsx from "clsx";
 import CategorySymbol from "../../atom/symbol";
 

@@ -1,6 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { RegionType, UserProfile } from "@fishing-town/shared";
+import { RegionType, UserProfile } from "@/core";
 import { Skeleton } from "../ui/skeleton";
 import RegionIcon from "./icon";
 

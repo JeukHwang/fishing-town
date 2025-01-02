@@ -1,4 +1,4 @@
-import { RegionType } from "@fishing-town/shared";
+import { RegionType } from "@/core";
 import { Icon } from "@iconify-icon/react";
 import clsx from "clsx";
 

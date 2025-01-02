@@ -1,4 +1,4 @@
-import { TownRule } from "@fishing-town/shared";
+import { TownRule } from "@/core";
 import {
   Download,
   Gem,

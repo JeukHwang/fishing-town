@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
+import { RegionType } from "@/core";
 import RegionIcon from "./icon";
-import { RegionType } from "@fishing-town/shared";
 
 interface Props {
   name: RegionType;

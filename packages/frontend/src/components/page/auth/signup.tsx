@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UserProfile } from "@/core";
 import { defaultHeader, domain } from "@/lib/utils";
-import { UserProfile } from "@fishing-town/shared";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Layout } from "../layout/layoutHeader";

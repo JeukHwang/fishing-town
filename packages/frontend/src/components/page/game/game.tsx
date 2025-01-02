@@ -20,8 +20,8 @@ import { Textarea } from "@/components/ui/textarea";
 import Profile from "@/components/atom/profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { UserProfile } from "@/core";
 import { cn } from "@/lib/utils";
-import { UserProfile } from "@fishing-town/shared";
 
 const leaderboard: ({
   ranking: string;

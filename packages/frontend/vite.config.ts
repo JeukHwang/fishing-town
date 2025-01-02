@@ -9,10 +9,4 @@ export default defineConfig({
   resolve: {
     alias: { "@": path.resolve(__dirname, "./src") },
   },
-  /* Custom */
-  build: {
-    rollupOptions: {
-        external: ['react/jsx-runtime'],
-    }
-  }
 });

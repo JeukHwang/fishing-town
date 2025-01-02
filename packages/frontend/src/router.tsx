@@ -5,7 +5,7 @@ import RegionIcon, {
 import RuleDiffCard from "@/components/molecule/rule/ruleDiffCard";
 import { LayoutCenter } from "@/components/page/layout/layoutCenter";
 import { Button } from "@/components/ui/button";
-import { DefaultRule, RegionType } from "@fishing-town/shared";
+import { DefaultRule, RegionType } from "@/core";
 import { createBrowserRouter } from "react-router-dom";
 import { toast } from "sonner";
 import Proposal from "./components/molecule/rule/proposal";

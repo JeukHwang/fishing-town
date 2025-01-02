@@ -25,13 +25,13 @@ import {
 } from "@/components/ui/popover";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
-import { camelToTitleCase } from "@/lib/utils";
 import {
   RuleEnglishDescription,
   RuleValidator,
   TownRule,
   TownRuleDescription,
-} from "@fishing-town/shared";
+} from "@/core";
+import { camelToTitleCase } from "@/lib/utils";
 import { Palette, RotateCcw, Scroll } from "lucide-react";
 import { useState } from "react";
 import RuleTextCard from "./ruleTextCard";

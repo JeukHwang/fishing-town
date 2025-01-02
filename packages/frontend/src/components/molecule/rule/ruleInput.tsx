@@ -2,13 +2,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Toggle } from "@/components/ui/toggle";
-import { camelToTitleCase } from "@/lib/utils";
-import { RuleDescription } from "@fishing-town/shared";
+import { RuleDescription } from "@/core";
 import {
   Fraction,
   isFractionBetween0and1,
   parseFraction,
-} from "@fishing-town/shared/src/util/number";
+} from "@/core/util/number";
+import { camelToTitleCase } from "@/lib/utils";
 import clsx from "clsx";
 import { Infinity } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";

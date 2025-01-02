@@ -1,4 +1,4 @@
-import { RegionType } from "@fishing-town/shared";
+import { RegionType } from "@/core";
 
 export const regionIcon: { [key in RegionType]: string } = {
   Island: "mdi:marble",

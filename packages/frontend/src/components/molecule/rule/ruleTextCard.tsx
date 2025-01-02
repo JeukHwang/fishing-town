@@ -1,6 +1,6 @@
 import { TypographyH3, TypographyH4 } from "@/components/atom/typography";
+import { RuleFormatter, TownRule } from "@/core";
 import { camelToTitleCase } from "@/lib/utils";
-import { RuleFormatter, TownRule } from "@fishing-town/shared";
 import CategorySymbol from "../../atom/symbol";
 
 interface Props {
