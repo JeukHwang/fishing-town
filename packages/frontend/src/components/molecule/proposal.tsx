@@ -1,3 +1,5 @@
+import RuleDiffCard from "@/components/atom/ruleDiffCard";
+import RuleInput from "@/components/atom/rulesetting";
 import CategorySymbol from "@/components/atom/symbol";
 import {
   Accordion,
@@ -5,345 +7,234 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 import { camelToTitleCase } from "@/lib/utils";
 import {
-  DefaultRule,
   RuleDescription,
-  RuleDiff,
   RuleEnglishDescription,
+  RuleFormatter,
   RuleValidator,
   TownRule,
+  TownRuleDescription,
 } from "@fishing-town/shared";
-import {
-  Fraction,
-  isFractionBetween0and1,
-  parseFraction,
-} from "@fishing-town/shared/src/util/number";
-import clsx from "clsx";
-import { Infinity, RotateCcw } from "lucide-react";
-import { useCallback, useState } from "react";
-import { Textarea } from "../ui/textarea";
+import { Palette, RotateCcw, Scroll } from "lucide-react";
+import { useState } from "react";
 
-type RawValueType<T> = T extends infer U
-  ? U extends "Boolean"
-    ? boolean
-    : string
-  : never;
-
-type ValueType<T> = T extends infer U
-  ? U extends "Fraction"
-    ? string
-    : U extends "NumberOrInfinity"
-    ? number | "Infinity"
-    : U extends "Number"
-    ? number
-    : U extends "Boolean"
-    ? boolean
-    : never
-  : never;
-
-type InputProp<T extends RuleDescription["inputType"]> = T extends infer U
-  ? { type: U; value: ValueType<U>; onChange: (value: ValueType<U>) => void }
-  : never;
-
-function CustomInput<T extends RuleDescription["inputType"]>({
-  type,
-  value,
-  onChange,
-}: InputProp<T>) {
-  const [displayValue, setDisplayValue] = useState(
-    (type === "Boolean" ? value : value.toString()) as RawValueType<T>
-  );
-
-  const [valid, setValid] = useState<boolean>(true);
-  const [lastNonInfinityValue, setLastNonInfinityValue] = useState<string>("0");
-
-  const validateValue = useCallback(
-    (raw: RawValueType<T>): ValueType<T> | null => {
-      switch (type) {
-        case "Fraction": {
-          const parsed = parseFraction(raw as unknown as Fraction);
-          const isValid = parsed !== null && isFractionBetween0and1(parsed);
-          return isValid ? (raw as ValueType<T>) : null;
-        }
-        case "NumberOrInfinity": {
-          if (raw === "Infinity") return "Infinity" as ValueType<T>;
-          const parsed = parseInt(raw as string, 10);
-          const isValid =
-            !Number.isNaN(parsed) &&
-            Number.isInteger(parsed) &&
-            parsed >= 0 &&
-            parsed.toString() === raw;
-          return isValid ? (parsed as ValueType<T>) : null;
-        }
-        case "Number": {
-          const parsed = parseInt(raw as string, 10);
-          const isValid =
-            !Number.isNaN(parsed) &&
-            Number.isInteger(parsed) &&
-            parsed >= 0 &&
-            parsed.toString() === raw;
-          return isValid ? (parsed as ValueType<T>) : null;
-        }
-        case "Boolean":
-          return raw as ValueType<T>;
-        default:
-          return null;
-      }
-    },
-    [type]
-  );
-
-  const handleChange = useCallback(
-    (raw: RawValueType<T>): void => {
-      setDisplayValue(raw);
-      const validatedValue = validateValue(raw);
-      const isValid = validatedValue !== null;
-      setValid(isValid);
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-      if (isValid) onChange(validatedValue as ValueType<T>);
-    },
-    [onChange, validateValue]
-  );
-
-  switch (type) {
-    case "Fraction":
-      return (
-        <Input
-          className={clsx("w-20", !valid && "border-red-600 text-red-600")}
-          type="string"
-          value={displayValue as string}
-          onChange={(e) => {
-            handleChange(e.target.value as RawValueType<T>);
-          }}
-        />
-      );
-    case "NumberOrInfinity":
-      return (
-        <>
-          {displayValue === "Infinity" ? (
-            <Input className="w-20" type="text" value={"∞"} disabled />
-          ) : (
-            <Input
-              className={clsx("w-20", !valid && "border-red-600 text-red-600")}
-              type="number"
-              min={0}
-              step={1}
-              value={displayValue as unknown as number}
-              onChange={(e) => {
-                console.log(e.target.value);
-                handleChange(e.target.value as RawValueType<T>);
-              }}
-            />
-          )}
-          <Button
-            variant={displayValue === "Infinity" ? "default" : "outline"}
-            size="icon"
-            onClick={() => {
-              if (displayValue === "Infinity") {
-                console.log(typeof lastNonInfinityValue, lastNonInfinityValue);
-                handleChange(lastNonInfinityValue as RawValueType<T>);
-              } else {
-                setLastNonInfinityValue(displayValue as string);
-                handleChange("Infinity" as RawValueType<T>);
-              }
-            }}
-          >
-            <Infinity />
-          </Button>
-        </>
-      );
-    case "Number":
-      return (
-        <Input
-          className={clsx("w-20", !valid && "border-red-600 text-red-600")}
-          type="number"
-          min={0}
-          step={1}
-          value={displayValue as unknown as number}
-          onChange={(e) => {
-            handleChange(e.target.value as RawValueType<T>);
-          }}
-        />
-      );
-    case "Boolean":
-      return (
-        <Switch
-          checked={displayValue as boolean}
-          onCheckedChange={(checked) => {
-            handleChange(checked as RawValueType<T>);
-          }}
-        />
-      );
-  }
-}
-
-interface RuleSettingProps {
+interface RuleProposalProps {
   title: string;
-  desc: RuleDescription;
-  value: unknown;
-  onChange: (value: unknown) => void;
+  desc: string;
+  rule: TownRule;
 }
 
-function RuleSetting({ title, desc, value, onChange }: RuleSettingProps) {
-  return (
-    <Alert className="flex items-center justify-between space-x-4  p-4">
-      <div>
-        <AlertTitle>{camelToTitleCase(title)}</AlertTitle>
-        <AlertDescription>{desc.content}</AlertDescription>
-      </div>
-      <div className="flex items-center space-x-2">
-        <CustomInput
-          type={desc.inputType as "Boolean"} // Type-casting to avoid type error
-          value={value as boolean} // Type-casting to avoid type error
-          onChange={onChange}
-        />
-      </div>
-    </Alert>
-  );
-}
-
-interface Props {
-  from: TownRule;
-  to: TownRule;
-  mode: "all" | "to" | "diff";
-}
-
-function RuleDiffCard2({ from, to, mode }: Props) {
-  return (
-    <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center">
-      <Accordion type="single" collapsible className="w-full">
-        {Object.entries(RuleDiff.TownRule(from, to, "en", mode)).map(
-          ([category, categoryValue]) => (
-            <AccordionItem key={category} value={category}>
-              <AccordionTrigger>
-                <div className="flex items-center gap-2">
-                  <CategorySymbol category={category as keyof TownRule} />
-                  {camelToTitleCase(category)}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid w-full items-center gap-4">
-                  {Object.entries(categoryValue).map(
-                    ([key, { type, value }]) => {
-                      const className = clsx(
-                        type === "added" && "border-green-600 text-green-600",
-                        type === "deleted" && "border-red-600 text-red-600",
-                        type === "updated" && "border-amber-600 text-amber-600"
-                      );
-                      return (
-                        <Alert key={key} className={className}>
-                          <AlertTitle>{camelToTitleCase(key)}</AlertTitle>
-                          <AlertDescription>{value}</AlertDescription>
-                        </Alert>
-                      );
-                    }
-                  )}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          )
-        )}
-      </Accordion>
-    </div>
-  );
-}
-
-export function Proposal() {
-  const [title, setTitle] = useState<string>("");
-  const [desc, setDesc] = useState<string>("");
-
-  const initRule = () => DefaultRule.LeafTown();
+export default function Proposal(props: RuleProposalProps) {
+  const [title, setTitle] = useState(props.title);
+  const [desc, setDesc] = useState(props.desc);
+  const initRule = () => JSON.parse(JSON.stringify(props.rule)) as TownRule;
   const [rule, setRule] = useState<TownRule>(initRule());
 
-  const ruleDesc = RuleEnglishDescription.TownRule();
-  const ruleDiff = Object.entries(
-    RuleDiff.TownRule(
-      DefaultRule.LeafTown(),
-      DefaultRule.TurtleTown(10),
-      "en",
-      false
-    )
-  );
+  const handleConfirm = () => {
+    console.log("Confirmed:", { title, description: desc });
+    // Here you would typically send this data to your backend or perform some other action
+    // setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setTitle(title);
+    setDesc(desc);
+    // setIsEditing(false);
+
+    console.log("Cancelled");
+    // Here you might want to reset the form or perform some other action
+  };
 
   return (
-    <>
-      <div className="preview flex min-h-[350px] w-full justify-center p-10 items-center">
-        <div className="w-[320px] flex flex-col gap-4">
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader>
+        <h2 className="text-xl font-semibold">New Rule Proposal</h2>
+      </CardHeader>
+      <CardContent className="w-full">
+        <div className="w-full flex flex-col gap-4">
           <div>
-            <Label htmlFor="name">Title</Label>
+            <Label htmlFor="title">Title</Label>
             <Input
               id="title"
+              value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
               }}
+              type="text"
+              className="text-2xl font-bold"
             />
           </div>
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="description">Description</Label>
             <Textarea
-              id="name"
+              id="description"
+              value={desc}
               onChange={(e) => {
                 setDesc(e.target.value);
               }}
+              className="text-base"
             />
           </div>
+          <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>Edit</Label>
+              <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+                <Button
+                  variant="outline"
+                  // size="icon"
+                  onClick={() => {
+                    setRule(initRule());
+                  }}
+                >
+                  <RotateCcw /> Reset changes
+                </Button>
+                <Accordion type="single" collapsible className="w-full">
+                  {(
+                    Object.entries(RuleEnglishDescription.TownRule()) as [
+                      keyof TownRule,
+                      TownRuleDescription[keyof TownRule]
+                    ][]
+                  ).map(([category, categoryValue]) => (
+                    <AccordionItem key={category} value={category}>
+                      <AccordionTrigger>
+                        <div className="flex items-center gap-2">
+                          <CategorySymbol category={category} />
+                          {camelToTitleCase(category)}
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent>
+                        <div className="grid w-full items-center gap-4">
+                          {(
+                            Object.entries(categoryValue) as [
+                              keyof typeof categoryValue,
+                              RuleDescription
+                            ][]
+                          ).map(([key, value]) => (
+                            <RuleInput
+                              key={key}
+                              title={camelToTitleCase(key)}
+                              desc={categoryValue[key]}
+                              value={rule[category][key]}
+                              onChange={(value) => {
+                                const newRule = JSON.parse(
+                                  JSON.stringify(rule)
+                                ) as TownRule;
+                                newRule[category][key] = value;
+                                if (RuleValidator.TownRule(newRule)) {
+                                  console.log(`${category}.${key}: ${value}`);
+                                  setRule(newRule);
+                                }
+                              }}
+                            />
+                          ))}
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </ScrollArea>
+            </div>
+            <div>
+              <Label>Result</Label>
+              <ScrollArea className="h-[300px] w-full rounded-md border p-4">
+                <div className="flex flex-row gap-4">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button variant="outline">
+                        <Palette /> Color code
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-full">
+                      <div className="w-full m-4 flex gap-2">
+                        <Badge
+                          variant="outline"
+                          className="border-green-600 text-green-600"
+                        >
+                          Added
+                        </Badge>
+                        <Badge
+                          variant="outline"
+                          className="border-red-600 text-red-600"
+                        >
+                          Deleted
+                        </Badge>
+                        <Badge
+                          variant="outline"
+                          className="border-amber-600 text-amber-600"
+                        >
+                          Updated
+                        </Badge>
+                        <Badge variant="outline">Unchanged</Badge>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">
+                        <Scroll /> Preview Rule
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="sm:max-w-[500px]">
+                      <DialogTitle>Preview Rule</DialogTitle>
+                      <ScrollArea className="h-[500px] w-full">
+                        <div className="flex flex-col gap-4 pr-4">
+                          {Object.entries(
+                            new RuleFormatter("en").TownRule(rule, true)
+                          ).map(([category, categoryValue]) => (
+                            <div key={category}>
+                              <div className="flex items-center gap-2">
+                                <CategorySymbol
+                                  category={category as keyof TownRule}
+                                />
+                                <strong>{camelToTitleCase(category)}</strong>
+                              </div>
+                              {Object.entries(categoryValue).map(
+                                ([key, value]) => (
+                                  <div key={key}>
+                                    <strong>{camelToTitleCase(key)}</strong>
+                                    <br />
+                                    {value}
+                                  </div>
+                                )
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                    </DialogContent>
+                  </Dialog>
+                </div>
+                <RuleDiffCard from={initRule()} to={rule} mode={"to"} />
+              </ScrollArea>
+            </div>
+          </div>
         </div>
-        <Accordion type="single" collapsible className="w-full">
-          {Object.entries(ruleDesc).map(([category, categoryValue]) => (
-            <AccordionItem key={category} value={category}>
-              <AccordionTrigger>
-                <div className="flex items-center gap-2">
-                  <CategorySymbol category={category as keyof TownRule} />
-                  {camelToTitleCase(category)}
-                </div>
-              </AccordionTrigger>
-              <AccordionContent>
-                <div className="grid w-full items-center gap-4">
-                  {Object.entries(categoryValue).map(([key]) => {
-                    return (
-                      <RuleSetting
-                        key={key}
-                        title={camelToTitleCase(key)}
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                        desc={ruleDesc[category][key]}
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-                        value={rule[category][key]}
-                        onChange={(value) => {
-                          const newRule = JSON.parse(
-                            JSON.stringify(rule)
-                          ) as TownRule;
-                          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                          newRule[category][key] = value;
-                          if (RuleValidator.TownRule(newRule)) {
-                            console.log(`${category}.${key}: ${value}`);
-                            setRule(newRule);
-                          }
-                        }}
-                      />
-                    );
-                  })}
-                </div>
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-        <Button
-          variant="outline"
-          size="icon"
-          onClick={() => {
-            setRule(initRule());
-          }}
-        >
-          <RotateCcw />
-        </Button>
-      </div>
-      <RuleDiffCard2 from={initRule()} to={rule} mode={"to"} />
-    </>
+        <div className="mt-6 flex justify-end gap-4">
+          <Button variant="outline" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button onClick={handleConfirm}>Confirm</Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

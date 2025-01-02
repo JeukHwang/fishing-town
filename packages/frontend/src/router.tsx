@@ -10,9 +10,7 @@ import { DefaultRule, RegionType } from "@fishing-town/shared";
 import { createBrowserRouter } from "react-router-dom";
 import { toast } from "sonner";
 import RuleModifiableCard from "./components/atom/ruleModifiableCard";
-import D2 from "./components/molecule/proposal_d2";
-import D3 from "./components/molecule/proposal_d3";
-import Proposal from "./components/molecule/visualize";
+import Proposal from "./components/molecule/proposal";
 import { Login } from "./components/page/auth/login";
 import { ResetPassword } from "./components/page/auth/reset-password";
 import { SignUp } from "./components/page/auth/signup";
@@ -107,16 +105,8 @@ const devRouter = [
       </LayoutCenter>
     ),
   },
-  //   {
-  //     path: "/proposal",
-  //     element: (
-  //       <LayoutCenter>
-  //         <Proposal />
-  //       </LayoutCenter>
-  //     ),
-  //   },
   {
-    path: "/editor",
+    path: "/proposal",
     element: (
       <LayoutCenter>
         <Proposal
@@ -124,22 +114,6 @@ const devRouter = [
           desc="This proposal aims to expand and refine our community guidelines, fostering a more inclusive, respectful, and productive environment for all members."
           rule={DefaultRule.LeafTown()}
         />
-      </LayoutCenter>
-    ),
-  },
-  {
-    path: "/d2",
-    element: (
-      <LayoutCenter>
-        <D2 />,
-      </LayoutCenter>
-    ),
-  },
-  {
-    path: "/d3",
-    element: (
-      <LayoutCenter>
-        <D3 />,
       </LayoutCenter>
     ),
   },
