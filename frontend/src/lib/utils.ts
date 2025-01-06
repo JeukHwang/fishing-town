@@ -7,7 +7,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const domain = "https://api.fishing-town.jeuk.io";
+export const isDev = import.meta.env.DEV;
+
+export const domain = isDev
+  ? "http://localhost:3000"
+  : "https://api.fishing-town.jeuk.io";
 
 export const defaultHeader = {
   headers: { "Content-Type": "application/json" },
@@ -23,3 +27,11 @@ export function camelToTitleCase(camelCase: string): string {
 export type LucideIcon = React.ForwardRefExoticComponent<
   Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
 >;
+
+export function redirectUrl(target: string, redirect: string) {
+  return `${target}?redirect=${redirect}`;
+}
+
+export function redirectAfterLogin(redirect: string) {
+  return redirectUrl("/login", redirect);
+}

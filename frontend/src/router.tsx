@@ -18,10 +18,11 @@ import { About } from "./components/page/d/about";
 import { Account } from "./components/page/d/account";
 import { Contact } from "./components/page/d/contact";
 import { Landing } from "./components/page/d/landing";
-import { Create } from "./components/page/game/create";
-import { Game } from "./components/page/game/game";
-import { Join } from "./components/page/game/join";
-import { Join2 } from "./components/page/game/join2";
+import { Create } from "./components/page/game_/create";
+import { Game } from "./components/page/game_/game";
+import { Join } from "./components/page/game_/join";
+import { Join2 } from "./components/page/game_/join2";
+import { Lobby } from "./components/page/lobby";
 import { ScrollArea } from "./components/ui/scroll-area";
 
 const devRouter = [
@@ -149,10 +150,11 @@ const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
   { path: "/reset-password", element: <ResetPassword /> },
   { path: "/account", element: <Account /> },
+  { path: "/lobby", element: <Lobby /> },
   { path: "/create", element: <Create /> },
   { path: "/join", element: <Join /> },
   { path: "/join2", element: <Join2 /> },
-  { path: "/game", element: <Game /> },
+  { path: "/game/:id", element: <Game /> },
   ...devRouter,
 ]);
 

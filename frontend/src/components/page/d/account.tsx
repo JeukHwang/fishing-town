@@ -3,8 +3,7 @@ import { useUserProfile } from "@/hooks/use-user";
 import { Layout } from "../layout/layoutHeader";
 
 export function Account() {
-  const [userProfile] = useUserProfile();
-
+  const { userProfile } = useUserProfile();
   return (
     <Layout>
       <h1 className="text-2xl font-semibold">Account</h1>

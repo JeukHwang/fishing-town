@@ -1,12 +1,34 @@
-import { Body, Controller, Get } from "@nestjs/common";
+import { Body, Controller, Get, Param } from "@nestjs/common";
 import type { User } from "@prisma/client";
 import { CurrentUser } from "../user/user.decorator.js";
 import { JoinGameDto, UpdateSettingDto } from "./game.dto.js";
 import { GameProfile, GameService, toGameProfile } from "./game.service.js";
 
+const codeMap = new Map<string, string>([["1", "one"]]);
 @Controller("game")
 export class GameController {
   constructor(private readonly gameService: GameService) {}
+
+  @Get("code/add/:key/:value")
+  addCodeMap(
+    @Param("key") key: string,
+    @Param("value") value: string
+  ): [string, string][] {
+    codeMap.set(key, value);
+    return [...codeMap.entries()];
+  }
+
+  @Get("code/remove/:key")
+  removeCodeMap(@Param("key") key: string): [string, string][] {
+    codeMap.delete(key);
+    return [...codeMap.entries()];
+  }
+
+  @Get("code/all")
+  getCodeMap(): [string, string][] {
+    console.log(codeMap);
+    return [...codeMap.entries()];
+  }
 
   @Get("all")
   async findAll(@CurrentUser() user: User): Promise<GameProfile[]> {

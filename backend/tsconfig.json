@@ -1,9 +1,7 @@
 {
     "extends": "./tsconfig.base.json",
     "compilerOptions": {
-        // "module": "commonjs",
-        "module": "NodeNext",
-        "moduleResolution": "nodenext",
+        "module": "commonjs",
         "declaration": true,
         "removeComments": true,
         "emitDecoratorMetadata": true,

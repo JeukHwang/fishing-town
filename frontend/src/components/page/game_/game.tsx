@@ -22,6 +22,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { UserProfile } from "@/core";
 import { cn } from "@/lib/utils";
+import { useParams } from "react-router";
 
 const leaderboard: ({
   ranking: string;
@@ -162,7 +163,13 @@ export function InfoDialog() {
   );
 }
 
+interface Params {
+  id: string;
+}
+
 export function Game() {
+  const { id } = useParams() as unknown as Params;
+
   return (
     // <LayoutCenter>
     //   <ChatPanel />
@@ -175,7 +182,7 @@ export function Game() {
     //   </div>
     <div className="fixed w-screen h-screen overflow-hidden bg-blue">
       <div className="fixed bottom-4 left-0 right-0">
-        <div className="flex justify-center items-center">da</div>
+        <div className="flex justify-center items-center">{id}</div>
       </div>
       <div className="fixed top-4 left-4 flex justify-center items-center">
         <Leaderboard />

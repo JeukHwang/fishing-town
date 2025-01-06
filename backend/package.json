@@ -2,14 +2,13 @@
     "name": "@fishing-town/backend",
     "version": "0.0.0",
     "main": "dist/src/main",
-    "type": "module",
     "prisma": {
         "schema": "./src/prisma/schema.prisma"
     },
     "scripts": {
-        "build": "npx prisma generate && nest build && tsc-alias",
+        "build": "npx prisma generate && nest build",
         "start:dev": "nest start --watch",
-        "start:prod": "node --experimental-specifier-resolution=node ."
+        "start:prod": "node ."
     },
     "dependencies": {
         "@nestjs/common": "^10.4.15",
@@ -17,7 +16,7 @@
         "@nestjs/jwt": "^10.2.0",
         "@nestjs/passport": "^10.0.3",
         "@nestjs/platform-express": "^10.4.15",
-        "@prisma/client": "^5.22.0",
+        "@prisma/client": "^6.1.0",
         "@tsconfig/strictest": "^2.0.5",
         "@types/passport-jwt": "^4.0.1",
         "@types/passport-local": "^1.0.38",
@@ -29,10 +28,8 @@
         "express": "^4.21.2",
         "passport-jwt": "^4.0.1",
         "passport-local": "^1.0.0",
-        "prisma": "^5.22.0",
         "reflect-metadata": "~0.2.2",
-        "rxjs": "^7.8.1",
-        "tsc-alias": "^1.8.10"
+        "rxjs": "^7.8.1"
     },
     "devDependencies": {
         "@nestjs/cli": "^10.4.9",
@@ -41,6 +38,8 @@
         "@types/cookie-parser": "^1.4.8",
         "@types/express": "^5.0.0",
         "@types/node": "^22.10.3",
+        "prisma": "^6.1.0",
         "typescript": "^5.7.2"
-    }
+    },
+    "packageManager": "pnpm@9.15.2+sha512.93e57b0126f0df74ce6bff29680394c0ba54ec47246b9cf321f0121d8d9bb03f750a705f24edc3c1180853afd7c2c3b94196d0a3d53d3e069d9e2793ef11f321"
 }

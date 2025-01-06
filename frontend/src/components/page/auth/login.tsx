@@ -1,16 +1,39 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useUserProfile } from "@/hooks/use-user";
 import { defaultHeader, domain } from "@/lib/utils";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Layout } from "../layout/layoutHeader";
 
 export function Login() {
   const navigate = useNavigate();
+  const { refreshUserProfile } = useUserProfile();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const signIn = useCallback(() => {
+    void (async () => {
+      if (!(email && password)) return;
+      const responseLogin = await fetch(`${domain}/auth/signin`, {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
+        ...defaultHeader,
+      });
+      if (!responseLogin.ok) {
+        console.log(await responseLogin.json());
+        alert("Failed to sign in");
+        return;
+      }
+      await refreshUserProfile();
+      void navigate(
+        new URLSearchParams(window.location.search).get("redirect") ?? "/"
+      );
+    })();
+  }, [navigate, refreshUserProfile, email, password]);
+
   return (
     <Layout className="gap-2">
       <h1 className="text-2xl font-semibold">Welcome back to the island</h1>
@@ -21,7 +44,9 @@ export function Login() {
             id="email"
             type="email"
             placeholder="username@example.com"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value);
+            }}
           />
         </div>
         <div>
@@ -30,29 +55,12 @@ export function Login() {
             id="password"
             type="password"
             placeholder="********"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
           />
         </div>
-        <Button
-          size="lg"
-          className="mt-2"
-          onClick={async () => {
-            if (!(email && password)) return;
-            const responseLogin = await fetch(`${domain}/auth/signin`, {
-              method: "POST",
-              body: JSON.stringify({
-                email,
-                password,
-              }),
-              ...defaultHeader,
-            });
-            if (!responseLogin.ok) {
-              alert("Failed to sign in");
-              return;
-            }
-            navigate("/");
-          }}
-        >
+        <Button size="lg" className="mt-2" onClick={signIn}>
           Login
         </Button>
       </div>

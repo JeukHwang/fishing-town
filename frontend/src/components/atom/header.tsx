@@ -1,12 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { useUserProfile } from "@/hooks/use-user";
 import { defaultHeader, domain } from "@/lib/utils";
+import { useCallback } from "react";
 import { Link, useNavigate } from "react-router";
 import RegionIcon from "./icon";
 
 export default function Header() {
   const navigate = useNavigate();
-  const [userProfile, refreshUserProfile] = useUserProfile();
+  const { userProfile, refreshUserProfile } = useUserProfile();
+
+  const signOut = useCallback(() => {
+    void (async () => {
+      await fetch(`${domain}/auth/signout`, {
+        method: "GET",
+        ...defaultHeader,
+      });
+      console.log(refreshUserProfile);
+      await refreshUserProfile();
+      void navigate("/");
+    })();
+  }, [navigate, refreshUserProfile]);
 
   return (
     <div className="w-full p-8 bg-white border-b border-[#d9d9d9] flex items-center justify-start gap-6">
@@ -26,20 +39,7 @@ export default function Header() {
       </div>
       {userProfile ? (
         <div className="flex items-center justify-start gap-3">
-          <Button
-            variant="outline"
-            onClick={async () => {
-              const response = await fetch(`${domain}/auth/signout`, {
-                method: "GET",
-                ...defaultHeader,
-              });
-
-              if (response.ok) {
-                refreshUserProfile();
-                navigate("/");
-              }
-            }}
-          >
+          <Button variant="outline" onClick={signOut}>
             Log Out
           </Button>
           <Button>
