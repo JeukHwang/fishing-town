@@ -58,6 +58,8 @@ export function Lobby() {
       <div className="container flex items-center justify-center mx-auto p-4">
         <ScrollArea className="h-[400px] w-[400px] p-4">
           <div className="flex flex-col gap-2">
+            {lobbies.length === 0 && <div>No lobby</div>}
+            {lobbies.length > 0 && <div>Lobbies {lobbies.length}</div>}
             {lobbies.map((lobby) => (
               <div
                 key={lobby.id}

@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useUserProfile } from "@/hooks/use-user";
 import { domain } from "@/lib/utils";
 import { useCallback, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Layout } from "../layout/layoutHeader";
 
 function CreateRoom() {
@@ -42,7 +42,7 @@ function CreateRoom() {
     <Dialog>
       <DialogTrigger asChild>
         <Button className="w-full max-w-60" size="lg">
-          Create new room
+          Create room
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -103,7 +103,6 @@ function CreateRoom() {
 }
 
 export function Landing() {
-  const navigate = useNavigate();
   const { userProfile } = useUserProfile();
 
   return (
@@ -114,15 +113,11 @@ export function Landing() {
       {userProfile && (
         <div className="flex flex-col gap-4">
           <CreateRoom />
-          <div className="w-full max-w-60">
-            <Input
-              className="centered text-center placeholder:text-center"
-              placeholder="Enter code to join"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") void navigate("/join");
-              }}
-            />
-          </div>
+          <Link to="/lobby">
+            <Button className="w-full max-w-60" size="lg" variant={"outline"}>
+              Join room
+            </Button>
+          </Link>
         </div>
       )}
     </Layout>
