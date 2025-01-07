@@ -1,6 +1,7 @@
 import { UserProfile } from "@/core";
 import { defaultHeader, domain } from "@/lib/utils";
 import {
+  Context,
   createContext,
   ReactNode,
   useCallback,
@@ -9,12 +10,12 @@ import {
   useState,
 } from "react";
 
-interface UserProfileContextType {
-  userProfile: UserProfile | null;
+interface ContextProps<Auth extends boolean> {
+  userProfile: Auth extends true ? UserProfile : UserProfile | null;
   refreshUserProfile: () => Promise<void>;
 }
 
-const UserProfileContext = createContext<UserProfileContextType>({
+const UserProfileContext = createContext<ContextProps<false>>({
   userProfile: null,
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   refreshUserProfile: async () => {},
@@ -47,7 +48,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!userProfile) void fetchUserProfile();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -59,6 +60,18 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useUserProfile() {
-  return useContext(UserProfileContext);
+// TODO: remembe this good practice!!!!!
+// eslint-disable-next-line react-refresh/only-export-components
+export function useUserProfile<Auth extends boolean>(
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _props: { auth: Auth } = { auth: false } as { auth: Auth }
+) {
+  const context = useContext<ContextProps<Auth>>(
+    UserProfileContext as unknown as Context<ContextProps<Auth>>
+  );
+  //   const navigate = useNavigate();
+  //   if (auth && context.userProfile === null) {
+  //     void navigate(redirectAfterLogin(window.location.pathname));
+  //   }
+  return context;
 }
