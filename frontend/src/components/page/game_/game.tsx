@@ -23,10 +23,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { UserProfile } from "@/core";
 import { useUserProfile } from "@/hooks/use-user";
-import { cn, domain, redirectAfterLogin } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { cn, redirectAfterLogin } from "@/lib/utils";
 import { useNavigate, useParams } from "react-router";
-import io from "socket.io-client";
 import { LayoutCenter } from "../layout/layoutCenter";
 
 const leaderboard: ({
@@ -67,7 +65,7 @@ function Leaderboard({ className, ...props }: CardProps) {
       <CardContent className="grid">
         <div className="grid gap-2">
           {/* <Separator /> */}
-          {leaderboard.map((data) =>
+          {leaderboard.map((data, i) =>
             data ? (
               <div
                 key={data.ranking}
@@ -79,7 +77,7 @@ function Leaderboard({ className, ...props }: CardProps) {
                 <Profile userProfile={data.userProfile} />
               </div>
             ) : (
-              <Separator />
+              <Separator key={i} />
             )
           )}
         </div>
@@ -172,6 +170,9 @@ interface Params {
   id: string;
 }
 
+// const socket = io(domain);
+//   , { withCredentials: true });
+
 export function Game() {
   const { id } = useParams() as unknown as Params;
 
@@ -183,32 +184,29 @@ export function Game() {
     void navigate(redirectAfterLogin(window.location.pathname));
   }
 
-  const socket = io(domain);
-  //   , { withCredentials: true });
+  //   const [text, setText] = useState("");
+  //   const [messages, setMessages] = useState<string[]>([]);
 
-  const [text, setText] = useState("");
-  const [messages, setMessages] = useState<string[]>([]);
+  //   function sendMessage() {
+  //     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  //     if (!userProfile) return;
+  //     socket.emit("sendMessage", { sender: userProfile.name, text });
+  //     setText("");
+  //   }
 
-  function joinChat() {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!userProfile) return;
-    socket.emit("join", userProfile.name);
-  }
-
-  function sendMessage() {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!userProfile) return;
-    socket.emit("sendMessage", { sender: userProfile.name, text });
-  }
-
-  socket.on("receiveMessage", (msg: { sender: string; text: string }) => {
-    setMessages([...messages, `${msg.sender}: ${msg.text}`]);
-  });
-
-  useEffect(() => {
-    joinChat();
-    return () => void socket.disconnect();
-  }, []);
+  //   // TODO: message not showing well
+  //   // TODO: still... refresh issue
+  //   useEffect(() => {
+  //     socket.on("receiveMessage", (msg: { sender: string; text: string }) => {
+  //       setMessages([...messages, `${msg.sender}: ${msg.text}`]);
+  //     });
+  //     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  //     if (!userProfile) return;
+  //     socket.emit("join", userProfile.name);
+  //     return () => {
+  //       void socket.disconnect();
+  //     };
+  //   }, []);
 
   return (
     <LayoutCenter>
@@ -231,7 +229,7 @@ export function Game() {
           <BugDialog />
           <InfoDialog />
         </div>
-        <div id="chat" className="fixed bottom-4 right-4">
+        {/* <div id="chat" className="fixed bottom-4 right-4">
           <div className="flex flex-col gap-2">
             <div className="grid gap-2">
               {messages.map((msg, i) => (
@@ -252,11 +250,10 @@ export function Game() {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 sendMessage();
-                setText("");
               }
             }}
           />
-        </div>
+        </div> */}
       </div>
     </LayoutCenter>
   );

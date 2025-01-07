@@ -1,3 +1,4 @@
+import { UseGuards } from "@nestjs/common";
 import {
   OnGatewayConnection,
   OnGatewayDisconnect,
@@ -7,8 +8,10 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
+import { JwtAccessGuard } from "src/auth/guard/jwt-access.guard.js";
+import { corsOptions } from "src/util/cors";
 
-@WebSocketGateway({ cors: true }) // Enable CORS for testing
+@WebSocketGateway(corsOptions)
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
@@ -23,12 +26,20 @@ export class ChatGateway
 
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
+    this.server.emit("receive_message", {
+      sender: "System",
+      text: `${client.id} joined`,
+    });
   }
 
   handleDisconnect(client: Socket) {
     console.log(`Client disconnected: ${client.id}`);
     this.users.delete(client.id);
     this.server.emit("users", Array.from(this.users));
+    this.server.emit("receive_message", {
+      sender: "System",
+      text: `${client.id} left`,
+    });
   }
 
   @SubscribeMessage("sendMessage")
@@ -40,5 +51,22 @@ export class ChatGateway
   handleJoin(_client: Socket, username: string) {
     this.users.add(username);
     this.server.emit("users", Array.from(this.users));
+  }
+
+  @SubscribeMessage("send_message")
+  send_message(client: Socket, text: string) {
+    this.server.emit("receive_message", {
+      sender: client.id,
+      text,
+    });
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @SubscribeMessage("auth_check")
+  send_message_auth(client: Socket) {
+    this.server.emit("receive_message", {
+      sender: "System",
+      text: `${client.id} authorized`,
+    });
   }
 }

@@ -35,3 +35,21 @@ export function redirectUrl(target: string, redirect: string) {
 export function redirectAfterLogin(redirect: string) {
   return redirectUrl("/login", redirect);
 }
+
+export function hashToColor(input: string): string {
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    hash = input.charCodeAt(i) + ((hash << 5) - hash);
+  }
+
+  // Convert hash to an RGB hex color string
+  const r = (hash >> 16) & 0xff;
+  const g = (hash >> 8) & 0xff;
+  const b = hash & 0xff;
+
+  // Return as a CSS-usable hex color string
+  return `#${((1 << 24) + (r << 16) + (g << 8) + b)
+    .toString(16)
+    .slice(1)
+    .toUpperCase()}`;
+}

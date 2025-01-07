@@ -25,12 +25,13 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(
     () =>
       JSON.parse(
-        localStorage.getItem("userProfile") ?? "null"
+        "null"
+        // localStorage.getItem("userProfile") ?? "null"
       ) as UserProfile | null
   );
 
   useEffect(() => {
-    localStorage.setItem("userProfile", JSON.stringify(userProfile));
+    // localStorage.setItem("userProfile", JSON.stringify(userProfile));
   }, [userProfile]);
 
   const fetchUserProfile = useCallback(async () => {
@@ -47,7 +48,21 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!userProfile) void fetchUserProfile();
+    void (async () => {
+      await fetch(`${domain}/auth/refresh`, {
+        method: "GET",
+        ...defaultHeader,
+      });
+      setInterval(() => {
+        void fetch(`${domain}/auth/refresh`, {
+          method: "GET",
+          ...defaultHeader,
+        });
+        console.log("refreshed");
+      }, 20 * 60 * 1000);
+
+      if (!userProfile) await fetchUserProfile();
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
