@@ -3,11 +3,10 @@ import { JwtService } from "@nestjs/jwt";
 import type { User } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import type { Response } from "express";
-import { UserService } from "../user/user.service.js";
-import $V from "../util/variable.js";
-import { RegisterDto } from "./auth.dto.js";
-import type { JwtPayload } from "./payload.js";
-
+import { UserService } from "../user/user.service";
+import $V from "../util/variable";
+import { RegisterDto } from "./auth.dto";
+import type { JwtPayload } from "./payload";
 const cookieBase = {
   domain: $V.domain,
   sameSite: "none" as const,

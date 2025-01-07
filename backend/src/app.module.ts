@@ -1,16 +1,15 @@
 import { MiddlewareConsumer, Module } from "@nestjs/common";
 import { APP_GUARD } from "@nestjs/core";
-import { AuthModule } from "./auth/auth.module.js";
-import { JwtAccessGuard } from "./auth/guard/jwt-access.guard.js";
+import { AuthModule } from "./auth/auth.module";
+import { JwtAccessGuard } from "./auth/guard/jwt-access.guard";
 import { ChatGateway } from "./chat/chat.gateway";
-import { GameModule } from "./game/game.module.js";
-import { LobbyModule } from "./lobby/lobby.module.js";
-import { PlayerModule } from "./player/player.module.js";
-import { PrismaModule } from "./prisma/prisma.module.js";
-import { TownModule } from "./town/town.module.js";
-import { UserModule } from "./user/user.module.js";
-import { LoggerMiddleware } from "./util/logger.middleware.js";
-
+import { GameModule } from "./game/game.module";
+import { LobbyModule } from "./lobby/lobby.module";
+import { PlayerModule } from "./player/player.module";
+import { PrismaModule } from "./prisma/prisma.module";
+import { TownModule } from "./town/town.module";
+import { UserModule } from "./user/user.module";
+import { LoggerMiddleware } from "./util/logger.middleware";
 @Module({
   imports: [
     PrismaModule,

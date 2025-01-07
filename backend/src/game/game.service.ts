@@ -1,8 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { Game, GameState, User } from "@prisma/client";
-import { PrismaService } from "../prisma/prisma.service.js";
-import { UpdateSettingDto } from "./game.dto.js";
-
+import { PrismaService } from "../prisma/prisma.service";
+import { UpdateSettingDto } from "./game.dto";
 export type GameProfile = {
   id: string;
   status: GameState;

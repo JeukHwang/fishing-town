@@ -8,9 +8,8 @@ import {
   WebSocketServer,
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
-import { JwtAccessGuard } from "src/auth/guard/jwt-access.guard.js";
+import { JwtAccessGuard } from "src/auth/guard/jwt-access.guard";
 import { corsOptions } from "src/util/cors";
-
 @WebSocketGateway(corsOptions)
 export class ChatGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect

@@ -1,7 +1,6 @@
 import { INestApplication, Injectable, OnModuleInit } from "@nestjs/common";
 import { Prisma, PrismaClient } from "@prisma/client";
-import $V from "../util/variable.js";
-
+import $V from "../util/variable";
 const options: Prisma.PrismaClientOptions = {
   datasourceUrl: $V.PRISMA.DB_URL,
   errorFormat: "pretty",

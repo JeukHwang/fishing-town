@@ -1,11 +1,10 @@
 import { Logger, LogLevel, ValidationPipe } from "@nestjs/common";
 import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
-import { AppModule } from "./app.module.js";
+import { AppModule } from "./app.module";
 import { corsOptions } from "./util/cors";
-import { AllExceptionsFilter } from "./util/exception.filter.js";
-import $V from "./util/variable.js";
-
+import { AllExceptionsFilter } from "./util/exception.filter";
+import $V from "./util/variable";
 async function bootstrap() {
   const logLevels: LogLevel[] = $V.isProduction
     ? ["error", "warn", "log"]

@@ -4,10 +4,9 @@ import type { User } from "@prisma/client";
 import type { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { Socket } from "socket.io";
-import { UserService } from "../../user/user.service.js";
-import $V from "../../util/variable.js";
-import type { JwtPayload } from "../payload.js";
-
+import { UserService } from "../../user/user.service";
+import $V from "../../util/variable";
+import type { JwtPayload } from "../payload";
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(
   Strategy,

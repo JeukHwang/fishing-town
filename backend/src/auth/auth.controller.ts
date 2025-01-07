@@ -9,14 +9,13 @@ import {
 } from "@nestjs/common";
 import type { User } from "@prisma/client";
 import type { Response } from "express";
-import { CurrentUser } from "../user/user.decorator.js";
-import { UserProfile, toUserProfile } from "../user/user.service.js";
-import { Public } from "./auth.decorator.js";
-import { RegisterDto } from "./auth.dto.js";
-import { AuthService } from "./auth.service.js";
-import { JwtRefreshGuard } from "./guard/jwt-refresh.guard.js";
-import { LocalGuard } from "./guard/local.guard.js";
-
+import { CurrentUser } from "../user/user.decorator";
+import { UserProfile, toUserProfile } from "../user/user.service";
+import { Public } from "./auth.decorator";
+import { RegisterDto } from "./auth.dto";
+import { AuthService } from "./auth.service";
+import { JwtRefreshGuard } from "./guard/jwt-refresh.guard";
+import { LocalGuard } from "./guard/local.guard";
 @Controller("auth")
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
