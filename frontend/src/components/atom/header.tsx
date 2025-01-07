@@ -29,30 +29,30 @@ export default function Header() {
         </div>
       </Link>
       <div className="basis-0 grow shrink flex items-center justify-end gap-2">
-        <Button variant="ghost">
-          <Link to="/about">About</Link>
-        </Button>
-        <Button variant="ghost">
-          <Link to="/contact">Contact</Link>
-        </Button>
+        <Link to="/about">
+          <Button variant="ghost">About</Button>
+        </Link>
+        <Link to="/contact">
+          <Button variant="ghost">Contact</Button>
+        </Link>
       </div>
       {userProfile ? (
         <div className="flex items-center justify-start gap-3">
           <Button variant="outline" onClick={signOut}>
             Log Out
           </Button>
-          <Button>
-            <Link to="/account">{userProfile.name}</Link>
-          </Button>
+          <Link to="/account">
+            <Button>{userProfile.name}</Button>
+          </Link>
         </div>
       ) : (
         <div className="flex items-center justify-start gap-3">
-          <Button variant="outline">
-            <Link to="/login">Log In</Link>
-          </Button>
-          <Button>
-            <Link to="/signup">Sign Up</Link>
-          </Button>
+          <Link to="/login">
+            <Button variant="outline">Log In</Button>
+          </Link>
+          <Link to="/signup">
+            <Button>Sign Up</Button>
+          </Link>
         </div>
       )}
     </div>

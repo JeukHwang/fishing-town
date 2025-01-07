@@ -65,12 +65,12 @@ export function Login() {
         </Button>
       </div>
       <div className="flex flex-row items-center"></div>
-      <Button variant="link">
-        <Link to="/signup">Don't have an account?</Link>
-      </Button>
-      <Button variant="link">
-        <Link to="/reset-password">Forget password?</Link>
-      </Button>
+      <Link to="/signup">
+        <Button variant="link">Don't have an account?</Button>
+      </Link>
+      <Link to="/reset-password">
+        <Button variant="link">Forget password?</Button>
+      </Link>
     </Layout>
   );
 }

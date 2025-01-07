@@ -82,9 +82,9 @@ export function SignUp() {
           Sign Up
         </Button>
       </div>
-      <Button variant="link">
-        <Link to="/login">Already have an account?</Link>
-      </Button>
+      <Link to="/login">
+        <Button variant="link">Already have an account?</Button>
+      </Link>
     </Layout>
   );
 }
