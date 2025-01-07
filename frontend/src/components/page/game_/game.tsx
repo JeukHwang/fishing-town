@@ -24,9 +24,9 @@ import { Separator } from "@/components/ui/separator";
 import { UserProfile } from "@/core";
 import { useUserProfile } from "@/hooks/use-user";
 import { cn, domain, redirectAfterLogin } from "@/lib/utils";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import io, { Socket } from "socket.io-client";
+import io from "socket.io-client";
 import { LayoutCenter } from "../layout/layoutCenter";
 
 const leaderboard: ({
@@ -177,53 +177,38 @@ export function Game() {
 
   const { userProfile } = useUserProfile({ auth: true });
   const navigate = useNavigate();
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!userProfile) {
-        // TODO: error
-      void navigate(redirectAfterLogin(window.location.pathname));
-    }
-  }, [userProfile, navigate]);
-
-  const socketRef = useRef<Socket | null>(null);
-  if (!socketRef.current) {
-    socketRef.current = io(domain, { withCredentials: true });
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (userProfile === null) {
+    console.log(redirectAfterLogin(window.location.pathname));
+    void navigate(redirectAfterLogin(window.location.pathname));
   }
-  const socket = socketRef.current;
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!socket) return;
 
-    const handleReceiveMessage = (msg: { sender: string; text: string }) => {
-      setMessages((prev) => [...prev, `${msg.sender}: ${msg.text}`]);
-    };
-
-    socket.on("receiveMessage", handleReceiveMessage);
-
-    return () => {
-      socket.off("receiveMessage", handleReceiveMessage);
-      socket.disconnect();
-    };
-  }, [socket]);
-
-  // 처음 조인(join)은 useEffect 안에서 혹은 함수 호출로
-  useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (socket && userProfile) {
-      socket.emit("join", userProfile.name);
-    }
-  }, [socket, userProfile]);
-
-  // 메세지 전송 함수
-  function sendMessage() {
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!socket || !userProfile) return;
-    socket.emit("sendMessage", { sender: userProfile.name, text });
-    setText("");
-  }
+  const socket = io(domain);
+  //   , { withCredentials: true });
 
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
+
+  function joinChat() {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!userProfile) return;
+    socket.emit("join", userProfile.name);
+  }
+
+  function sendMessage() {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!userProfile) return;
+    socket.emit("sendMessage", { sender: userProfile.name, text });
+  }
+
+  socket.on("receiveMessage", (msg: { sender: string; text: string }) => {
+    setMessages([...messages, `${msg.sender}: ${msg.text}`]);
+  });
+
+  useEffect(() => {
+    joinChat();
+    return () => void socket.disconnect();
+  }, []);
 
   return (
     <LayoutCenter>
@@ -267,6 +252,7 @@ export function Game() {
             onKeyDown={(e) => {
               if (e.key === "Enter") {
                 sendMessage();
+                setText("");
               }
             }}
           />

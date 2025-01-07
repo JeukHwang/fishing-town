@@ -3,7 +3,7 @@ import { LobbyProfile } from "@/core/prisma";
 import { useUserProfile } from "@/hooks/use-user";
 import { defaultHeader, domain, redirectAfterLogin } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { Layout } from "./layout/layoutHeader";
@@ -22,6 +22,7 @@ export function Lobby() {
         ...defaultHeader,
       });
       const data = (await response.json()) as LobbyProfile[];
+      console.log(data);
       setLobbies(data);
     })();
   }, []);
@@ -79,6 +80,9 @@ export function Lobby() {
                   }}
                 />
                 <div className="flex flex-row gap-2">
+                  <Link to={`/game/${lobby.id}`}>
+                    <Button>Play</Button>
+                  </Link>
                   {lobby.participants.some(
                     (participant) => participant.id === userProfile?.id
                   ) ? (
