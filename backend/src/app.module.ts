@@ -9,6 +9,7 @@ import { PrismaModule } from "./prisma/prisma.module.js";
 import { TownModule } from "./town/town.module.js";
 import { UserModule } from "./user/user.module.js";
 import { LoggerMiddleware } from "./util/logger.middleware.js";
+import { ChatGateway } from './chat/chat.gateway';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { LoggerMiddleware } from "./util/logger.middleware.js";
     GameModule,
     LobbyModule,
   ],
-  providers: [{ provide: APP_GUARD, useClass: JwtAccessGuard }],
+  providers: [{ provide: APP_GUARD, useClass: JwtAccessGuard }, ChatGateway],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
