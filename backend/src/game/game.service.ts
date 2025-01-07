@@ -1,17 +1,17 @@
 import { Injectable } from "@nestjs/common";
-import { Game, GameStatus, User } from "@prisma/client";
+import { Game, GameState, User } from "@prisma/client";
 import { PrismaService } from "../prisma/prisma.service.js";
 import { UpdateSettingDto } from "./game.dto.js";
 
 export type GameProfile = {
   id: string;
-  status: GameStatus;
+  status: GameState;
   rule: object; // Game Setting
 };
 
 export const toGameProfile = (game: Game): GameProfile => ({
   id: game.id,
-  status: game.status as GameStatus,
+  status: game.status as GameState,
   rule: game.rule as object,
 });
 
@@ -41,7 +41,7 @@ export class GameService {
               { players: { some: { user: { id: user.id } } } },
             ],
           },
-          { status: { not: GameStatus.Finished } },
+          { status: { not: GameState.Postgame } },
         ],
       },
     });
@@ -81,7 +81,7 @@ export class GameService {
     if (
       game === null ||
       game.hostId === user.id ||
-      game.status !== GameStatus.Waiting
+      game.status !== GameState.PreGame
     ) {
       return null;
     }
