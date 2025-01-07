@@ -7,6 +7,7 @@ import { Socket } from "socket.io";
 import { UserService } from "../../user/user.service";
 import $V from "../../util/variable";
 import type { JwtPayload } from "../payload";
+
 @Injectable()
 export class JwtAccessStrategy extends PassportStrategy(
   Strategy,

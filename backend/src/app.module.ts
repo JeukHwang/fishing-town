@@ -10,6 +10,7 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { TownModule } from "./town/town.module";
 import { UserModule } from "./user/user.module";
 import { LoggerMiddleware } from "./util/logger.middleware";
+
 @Module({
   imports: [
     PrismaModule,

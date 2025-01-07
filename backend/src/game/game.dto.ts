@@ -1,5 +1,6 @@
 import { IsIn, IsJSON, IsOptional, IsString } from "class-validator";
 import { townType } from "../core/index";
+
 export class UpdateSettingDto {
   @IsJSON()
   rule!: JSON;

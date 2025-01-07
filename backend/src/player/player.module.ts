@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { PlayerService } from './player.service.js';
+import { Module } from "@nestjs/common";
+import { PlayerService } from "./player.service";
 
 @Module({
-  providers: [PlayerService]
+  providers: [PlayerService],
 })
 export class PlayerModule {}

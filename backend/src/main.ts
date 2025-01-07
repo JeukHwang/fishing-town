@@ -5,6 +5,7 @@ import { AppModule } from "./app.module";
 import { corsOptions } from "./util/cors";
 import { AllExceptionsFilter } from "./util/exception.filter";
 import $V from "./util/variable";
+
 async function bootstrap() {
   const logLevels: LogLevel[] = $V.isProduction
     ? ["error", "warn", "log"]

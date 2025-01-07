@@ -7,6 +7,7 @@ import { UserService } from "../user/user.service";
 import $V from "../util/variable";
 import { RegisterDto } from "./auth.dto";
 import type { JwtPayload } from "./payload";
+
 const cookieBase = {
   domain: $V.domain,
   sameSite: "none" as const,

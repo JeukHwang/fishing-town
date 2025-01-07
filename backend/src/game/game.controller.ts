@@ -3,7 +3,9 @@ import type { User } from "@prisma/client";
 import { CurrentUser } from "../user/user.decorator";
 import { JoinGameDto, UpdateSettingDto } from "./game.dto";
 import { GameProfile, GameService, toGameProfile } from "./game.service";
+
 const codeMap = new Map<string, string>([["1", "one"]]);
+
 @Controller("game")
 export class GameController {
   constructor(private readonly gameService: GameService) {}
