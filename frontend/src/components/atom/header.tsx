@@ -15,7 +15,6 @@ export default function Header() {
         method: "GET",
         ...defaultHeader,
       });
-      console.log(refreshUserProfile);
       await refreshUserProfile();
       void navigate("/");
     })();

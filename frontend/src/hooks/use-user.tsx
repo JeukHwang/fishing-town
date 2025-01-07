@@ -46,8 +46,9 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    void fetchUserProfile();
-  }, [fetchUserProfile]);
+    if (!userProfile) void fetchUserProfile();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <UserProfileContext.Provider
