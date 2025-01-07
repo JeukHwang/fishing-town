@@ -17,6 +17,7 @@ export class LobbyController {
     return toLobbyProfile(lobby);
   }
 
+  // TODO: enable only one of join and leave; so unfinished game for each user should be unique
   @Get("join/:id")
   async join(
     @Param("id") id: string,
