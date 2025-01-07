@@ -31,13 +31,13 @@ export function Lobby() {
   }, [fetchLobbies]);
 
   const joinLobby = useCallback(
-    (id: string) => {
+    async (id: string) => {
       void fetch(`${domain}/lobby/join/${id}`, {
         method: "GET",
         ...defaultHeader,
       });
-      void navigate(`/game/${id}`);
       fetchLobbies();
+      await navigate(`/game/${id}`);
     },
     [navigate, fetchLobbies]
   );

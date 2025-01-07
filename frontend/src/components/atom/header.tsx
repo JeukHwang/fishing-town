@@ -16,7 +16,7 @@ export default function Header() {
         ...defaultHeader,
       });
       await refreshUserProfile();
-      void navigate("/");
+      await navigate("/");
     })();
   }, [navigate, refreshUserProfile]);
 

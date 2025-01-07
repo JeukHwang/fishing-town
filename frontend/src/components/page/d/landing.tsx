@@ -34,7 +34,7 @@ function CreateRoom() {
           password: password !== "" ? password : null,
         }),
       });
-      void navigate("/create");
+      await navigate("/create");
     })();
   }, [navigate, title, description, password]);
 

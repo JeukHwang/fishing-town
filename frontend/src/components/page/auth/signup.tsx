@@ -75,7 +75,7 @@ export function SignUp() {
                 return;
               }
 
-              navigate("/");
+              await navigate("/");
             })();
           }}
         >

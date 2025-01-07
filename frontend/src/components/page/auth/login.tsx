@@ -28,7 +28,7 @@ export function Login() {
         return;
       }
       await refreshUserProfile();
-      void navigate(
+      await navigate(
         new URLSearchParams(window.location.search).get("redirect") ?? "/"
       );
     })();
