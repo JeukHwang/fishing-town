@@ -1,12 +1,7 @@
+import { Message } from "@/lib/shared";
 import { domain } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
-
-interface Message {
-  sender: string;
-  text: string;
-  date: Date;
-}
 
 const useSocket = () => {
   const [socket, setSocket] = useState<Socket | null>(null);

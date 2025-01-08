@@ -13,6 +13,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import useSocket from "@/hooks/use-socket";
+import { useUserProfile } from "@/hooks/use-user";
 import { hashToColor } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
@@ -25,6 +26,7 @@ function stringifyDate(date: Date): string {
 }
 
 export function ChatPanel2() {
+  const { userProfile } = useUserProfile();
   const { socket, messages, sendMessage } = useSocket();
   const [text, setText] = useState("");
 
@@ -45,8 +47,9 @@ export function ChatPanel2() {
   };
 
   useEffect(() => {
-    if (isAtBottom || messages.at(-1)?.sender === socket?.id) scrollToBottom();
-  }, [messages, isAtBottom, socket?.id]);
+    if (isAtBottom || messages.at(-1)?.sender.id === userProfile?.id)
+      scrollToBottom();
+  }, [messages, isAtBottom, userProfile?.id]);
 
   useEffect(() => {
     const scrollArea = scrollAreaRef.current;
@@ -80,9 +83,10 @@ export function ChatPanel2() {
         >
           {messages.map(({ sender, text, date }, i) => (
             <div key={i}>
-              <span style={{ color: hashToColor(sender) }}>●</span>{" "}
-              <span className="font-medium text-sm">{sender}</span>{" "}
-              <span className="text-sm text-muted-foreground">{text} </span>
+              <span style={{ color: hashToColor(sender.id) }}>●</span>{" "}
+              <span className="font-medium text-sm">{sender.name}</span>{" "}
+              <span className="text-sm text-muted-foreground">{text}</span>
+              <span className="whitespace-pre-wrap">{"  "}</span>
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>

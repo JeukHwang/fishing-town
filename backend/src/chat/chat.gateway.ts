@@ -9,8 +9,21 @@ import {
 } from "@nestjs/websockets";
 import { Server, Socket } from "socket.io";
 import { JwtAccessGuard } from "src/auth/guard/jwt-access.guard";
+import { toUserProfile, UserProfile } from "src/user/user.service";
 import { corsOptions } from "src/util/cors";
 import { SocketWithUser } from "src/util/type";
+
+interface Message {
+  sender: UserProfile;
+  text: string;
+  date: Date;
+}
+
+const systemProfile: UserProfile = {
+  id: "System",
+  name: "System",
+  email: "System",
+};
 
 @WebSocketGateway(corsOptions)
 export class ChatGateway
@@ -28,10 +41,10 @@ export class ChatGateway
   handleConnection(client: Socket) {
     console.log(`Client connected: ${client.id}`);
     this.server.emit("receive_message", {
-      sender: "System",
+      sender: systemProfile,
       text: `${client.id} joined`,
       date: new Date(),
-    });
+    } as Message);
   }
 
   handleDisconnect(client: Socket) {
@@ -39,10 +52,10 @@ export class ChatGateway
     this.users.delete(client.id);
     this.server.emit("users", Array.from(this.users));
     this.server.emit("receive_message", {
-      sender: "System",
+      sender: systemProfile,
       text: `${client.id} left`,
       date: new Date(),
-    });
+    } as Message);
   }
 
   @SubscribeMessage("sendMessage")
@@ -56,22 +69,23 @@ export class ChatGateway
     this.server.emit("users", Array.from(this.users));
   }
 
+  @UseGuards(JwtAccessGuard)
   @SubscribeMessage("send_message")
-  send_message(client: Socket, text: string) {
+  send_message(client: SocketWithUser, text: string) {
     this.server.emit("receive_message", {
-      sender: client.id,
+      sender: toUserProfile(client.user),
       text,
       date: new Date(),
-    });
+    } as Message);
   }
 
   @UseGuards(JwtAccessGuard)
   @SubscribeMessage("auth_check")
   send_message_auth(client: SocketWithUser) {
     this.server.emit("receive_message", {
-      sender: "System",
+      sender: systemProfile,
       text: `${client.id} authorized as ${client.user.name}`,
       date: new Date(),
-    });
+    } as Message);
   }
 }
