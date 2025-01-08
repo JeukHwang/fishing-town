@@ -1,0 +1,8 @@
+import { User } from "@prisma/client";
+import { Socket } from "socket.io";
+
+declare const __brand: unique symbol;
+type Brand<B> = { [__brand]: B };
+export type Branded<T, B> = T & Brand<B>;
+
+export type SocketWithUser = Socket & { user: User };

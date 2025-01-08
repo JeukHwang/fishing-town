@@ -10,6 +10,7 @@ import {
 import { Server, Socket } from "socket.io";
 import { JwtAccessGuard } from "src/auth/guard/jwt-access.guard";
 import { corsOptions } from "src/util/cors";
+import { SocketWithUser } from "src/util/type";
 
 @WebSocketGateway(corsOptions)
 export class ChatGateway
@@ -63,10 +64,10 @@ export class ChatGateway
 
   @UseGuards(JwtAccessGuard)
   @SubscribeMessage("auth_check")
-  send_message_auth(client: Socket) {
+  send_message_auth(client: SocketWithUser) {
     this.server.emit("receive_message", {
       sender: "System",
-      text: `${client.id} authorized`,
+      text: `${client.id} authorized as ${client.user.name}`,
     });
   }
 }

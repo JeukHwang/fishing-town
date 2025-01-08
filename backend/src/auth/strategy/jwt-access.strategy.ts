@@ -4,6 +4,7 @@ import type { User } from "@prisma/client";
 import type { Request } from "express";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { Socket } from "socket.io";
+import { SocketWithUser } from "src/util/type";
 import { UserService } from "../../user/user.service";
 import $V from "../../util/variable";
 import type { JwtPayload } from "../payload";
@@ -43,12 +44,24 @@ export class JwtAccessStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: JwtPayload): Promise<User> {
+  async validate(
+    payload: JwtPayload,
+    requestOrClient: Request | Socket
+  ): Promise<User> {
     const user: User | null = await this.userService.findById(payload.id);
     if (!user) {
       throw new UnauthorizedException("Access Failure");
     }
-    // save into req.user
+
+    /** @description Attach user to both HTTP and WebSocket clients */
+    if (requestOrClient) {
+      if ("cookies" in requestOrClient) {
+        (requestOrClient as Request).user = user;
+      } else if ("handshake" in requestOrClient) {
+        (requestOrClient as SocketWithUser).user = user;
+      }
+    }
+
     return user;
   }
 }
