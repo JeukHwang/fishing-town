@@ -16,6 +16,7 @@ import { RegisterDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { JwtRefreshGuard } from "./guard/jwt-refresh.guard";
 import { LocalGuard } from "./guard/local.guard";
+import { RequestWithUser } from "src/util/type";
 
 @Controller("auth")
 export class AuthController {
@@ -31,7 +32,7 @@ export class AuthController {
   @UseGuards(LocalGuard)
   @Post("signin")
   async signIn(
-    @Req() req: Request & { user: User },
+    @Req() req: RequestWithUser,
     @Res({ passthrough: true }) res: Response
   ): Promise<void> {
     const user = req.user;
