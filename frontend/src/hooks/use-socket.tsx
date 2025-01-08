@@ -2,11 +2,15 @@ import { domain } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
+interface Message {
+  sender: string;
+  text: string;
+  date: Date;
+}
+
 const useSocket = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [messages, setMessages] = useState<{ sender: string; text: string }[]>(
-    []
-  );
+  const [messages, setMessages] = useState<Message[]>([]);
 
   useEffect(() => {
     // const newSocket = io(domain, { query: { room } });
@@ -23,12 +27,10 @@ const useSocket = () => {
 
   useEffect(() => {
     if (!socket) return;
-    socket.on(
-      "receive_message",
-      (message: { sender: string; text: string }) => {
-        setMessages((prevMessages) => [...prevMessages, message]);
-      }
-    );
+    socket.on("receive_message", ({ sender, text, date }: Message) => {
+      const converted: Message = { sender, text, date: new Date(date) };
+      setMessages((prevMessages) => [...prevMessages, converted]);
+    });
     socket.emit("auth_check");
   }, [socket]);
 

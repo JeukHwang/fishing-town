@@ -30,6 +30,7 @@ export class ChatGateway
     this.server.emit("receive_message", {
       sender: "System",
       text: `${client.id} joined`,
+      date: new Date(),
     });
   }
 
@@ -40,6 +41,7 @@ export class ChatGateway
     this.server.emit("receive_message", {
       sender: "System",
       text: `${client.id} left`,
+      date: new Date(),
     });
   }
 
@@ -59,6 +61,7 @@ export class ChatGateway
     this.server.emit("receive_message", {
       sender: client.id,
       text,
+      date: new Date(),
     });
   }
 
@@ -68,6 +71,7 @@ export class ChatGateway
     this.server.emit("receive_message", {
       sender: "System",
       text: `${client.id} authorized as ${client.user.name}`,
+      date: new Date(),
     });
   }
 }
