@@ -33,31 +33,64 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer()
   server!: Server;
 
-  private users: Record<string, UserProfile> = {};
+  private readonly data: Record<
+    string, // User ID
+    {
+      cached: { userProfile: UserProfile };
+      redis: { socketId: string };
+      sql: { room: string };
+    }
+  > = {};
 
   handleConnection(@ConnectedSocket() client: Socket) {
     this.logger.log(`Connect: ${client.id}`);
   }
 
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    this.logger.log(`Disconnect: ${client.id}`);
+
+    const found = Object.entries(this.data).find(
+      ([_, value]) => value.redis.socketId === client.id
+    );
+
+    if (!found) return;
+    const [_userId, data] = found;
+    if (data.sql.room) {
+      this.server.to(data.sql.room).emit("receive_message", {
+        sender: systemProfile,
+        text: `${data.cached.userProfile.name ?? "Anonymous"} disconnected`,
+        date: new Date(),
+      } as Message);
+    }
+    delete this.data[client.id];
+  }
+
   @UseGuards(JwtAccessGuard)
   @SubscribeMessage("auth")
-  auth(@ConnectedSocket() client: SocketWithUser) {
-    this.users[client.id] = toUserProfile(client.user); // TODO: maybe need to save only id and fetch user info when needed
-    this.server.emit("receive_message", {
+  auth(@ConnectedSocket() client: SocketWithUser, @MessageBody() room: string) {
+    const alreadyFound = Object.entries(this.data).find(
+      ([_, value]) => value.redis.socketId === client.id
+    );
+
+    if (alreadyFound) return; // check if already connected // TODO: handle in /game/join
+    this.data[client.user.id] = {
+      cached: { userProfile: toUserProfile(client.user) },
+      redis: { socketId: client.id },
+      sql: { room },
+    };
+    client.join(room);
+
+    const [_userId, data] = Object.entries(this.data).find(
+      ([_, value]) => value.redis.socketId === client.id
+    )!;
+
+    this.server.to(data.sql.room).emit("receive_message", {
       sender: systemProfile,
       text: `${client.user.name} connected`,
       date: new Date(),
     } as Message);
-  }
 
-  handleDisconnect(@ConnectedSocket() client: Socket) {
-    this.logger.log(`Disconnect: ${client.id}`);
-    this.server.emit("receive_message", {
-      sender: systemProfile,
-      text: `${this.users[client.id]?.name ?? "Anonymous"} disconnected`,
-      date: new Date(),
-    } as Message);
-    delete this.users[client.id];
+    // return failed...?
   }
 
   @UseGuards(JwtAccessGuard)
@@ -66,7 +99,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     @ConnectedSocket() client: SocketWithUser,
     @MessageBody() text: string
   ) {
-    this.server.emit("receive_message", {
+    const found = Object.entries(this.data).find(
+      ([_, value]) => value.redis.socketId === client.id
+    )!;
+    if (!found) return;
+    const [_userId, data] = found;
+
+    this.server.to(data.sql.room).emit("receive_message", {
       sender: toUserProfile(client.user),
       text,
       date: new Date(),

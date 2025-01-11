@@ -3,7 +3,7 @@ import { domain } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { io, Socket } from "socket.io-client";
 
-const useSocket = () => {
+const useSocket = (room: string) => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -23,8 +23,8 @@ const useSocket = () => {
       const converted: Message = { sender, text, date: new Date(date) };
       setMessages((prevMessages) => [...prevMessages, converted]);
     });
-    socket.emit("auth");
-  }, [socket]);
+    socket.emit("auth", room);
+  }, [socket, room]);
 
   const sendMessage = (message: string) => {
     if (!socket) return;

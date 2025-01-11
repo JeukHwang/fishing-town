@@ -12,8 +12,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import useSocket from "@/hooks/use-socket";
 import { useUserProfile } from "@/hooks/use-user";
+import { Message } from "@/lib/shared";
 import { hashToColor } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
@@ -25,9 +25,13 @@ function stringifyDate(date: Date): string {
   return `${hours}:${minutes}:${seconds}`;
 }
 
-export function ChatPanel2() {
+interface Props {
+  messages: Message[];
+  sendMessage: (message: string) => void;
+}
+
+export function ChatPanel2({ messages, sendMessage }: Props) {
   const { userProfile } = useUserProfile();
-  const { messages, sendMessage } = useSocket();
   const [text, setText] = useState("");
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);

@@ -22,6 +22,7 @@ import Profile from "@/components/atom/profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { UserProfile } from "@/core";
+import useSocket from "@/hooks/use-socket";
 import { useUserProfile } from "@/hooks/use-user";
 import { cn, redirectAfterLogin } from "@/lib/utils";
 import { useNavigate, useParams } from "react-router";
@@ -175,6 +176,7 @@ interface Params {
 
 export function Game() {
   const { id } = useParams() as unknown as Params;
+  const { messages, sendMessage } = useSocket(id);
 
   const { userProfile } = useUserProfile({ auth: true });
   const navigate = useNavigate();
@@ -205,7 +207,7 @@ export function Game() {
           <InfoDialog />
         </div>
         <div className="fixed bottom-4 right-4 flex justify-center items-center">
-          <ChatPanel2 />
+          <ChatPanel2 {...{ messages, sendMessage }} />
         </div>
       </div>
     </LayoutCenter>

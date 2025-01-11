@@ -32,6 +32,7 @@ export class GameService {
   }
 
   async findCurrentOfUser(user: User): Promise<Game | null> {
+    // TODO: prevent join two games
     const games = await this.prismaService.game.findMany({
       where: {
         AND: [
