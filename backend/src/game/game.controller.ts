@@ -1,12 +1,9 @@
 import { Controller } from "@nestjs/common";
-import { GameService } from "./game.service";
 
-const codeMap = new Map<string, string>([["1", "one"]]);
+// const codeMap = new Map<string, string>([["1", "one"]]);
 
 @Controller("game")
 export class GameController {
-  constructor(private readonly gameService: GameService) {}
-
   //   @Get("code/add/:key/:value")
   //   addCodeMap(
   //     @Param("key") key: string,
@@ -15,37 +12,31 @@ export class GameController {
   //     codeMap.set(key, value);
   //     return [...codeMap.entries()];
   //   }
-
   //   @Get("code/remove/:key")
   //   removeCodeMap(@Param("key") key: string): [string, string][] {
   //     codeMap.delete(key);
   //     return [...codeMap.entries()];
   //   }
-
   //   @Get("code/all")
   //   getCodeMap(): [string, string][] {
   //     console.log(codeMap);
   //     return [...codeMap.entries()];
   //   }
-
   //   @Get("all")
   //   async findAll(@CurrentUser() user: User): Promise<GameProfile[]> {
   //     const games = await this.gameService.findAllOfUser(user);
   //     return games.map(toGameProfile);
   //   }
-
   //   @Get("current")
   //   async findCurrent(@CurrentUser() user: User): Promise<GameProfile | null> {
   //     const game = await this.gameService.findCurrentOfUser(user);
   //     return game ? toGameProfile(game) : null;
   //   }
-
   //   @Get("create")
   //   async create(@CurrentUser() user: User): Promise<GameProfile | null> {
   //     const game = await this.gameService.create(user);
   //     return game ? toGameProfile(game) : null;
   //   }
-
   //   @Get("update")
   //   async update(
   //     @CurrentUser() user: User,
@@ -53,7 +44,6 @@ export class GameController {
   //   ): Promise<void> {
   //     await this.gameService.update(user, body);
   //   }
-
   //   @Get("join")
   //   async join(
   //     @CurrentUser() user: User,
@@ -62,12 +52,10 @@ export class GameController {
   //     const game = await this.gameService.join(user, body.id);
   //     return game ? toGameProfile(game) : null;
   //   }
-
   //   @Get("leave")
   //   async leave(@CurrentUser() user: User): Promise<void> {
   //     await this.gameService.leave(user);
   //   }
-
   //   @Get("start")
   //   async start(@CurrentUser() user: User): Promise<void> {
   //     return await this.gameService.start(user);

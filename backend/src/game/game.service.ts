@@ -42,7 +42,7 @@ export class GameService {
               { players: { some: { user: { id: user.id } } } },
             ],
           },
-          { status: { not: GameState.Postgame } },
+          { status: { not: GameState.Completion } },
         ],
       },
     });
@@ -82,7 +82,7 @@ export class GameService {
     if (
       game === null ||
       game.hostId === user.id ||
-      game.status !== GameState.PreGame
+      game.status !== GameState.Preparation
     ) {
       return null;
     }
