@@ -14,7 +14,7 @@ export function Chat() {
         <div className="grid gap-2">
           {messages.map(({ sender, text }, i) => (
             <div key={i}>
-              <span style={{ color: hashToColor(sender) }}>●</span> {sender}
+              <span style={{ color: hashToColor(sender.id) }}>●</span> {sender.name}
               <br />
               {text}
             </div>
