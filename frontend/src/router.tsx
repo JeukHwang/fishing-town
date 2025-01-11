@@ -18,7 +18,6 @@ import { About } from "./components/page/d/about";
 import { Account } from "./components/page/d/account";
 import { Contact } from "./components/page/d/contact";
 import { Landing } from "./components/page/d/landing";
-import { Chat } from "./components/page/game_/chat";
 import { Create } from "./components/page/game_/create";
 import { Game } from "./components/page/game_/game";
 import { Join } from "./components/page/game_/join";
@@ -156,7 +155,6 @@ const router = createBrowserRouter([
   { path: "/join", element: <Join /> },
   { path: "/join2", element: <Join2 /> },
   { path: "/game/:id", element: <Game /> },
-  { path: "/chat", element: <Chat /> },
   ...devRouter,
 ]);
 
