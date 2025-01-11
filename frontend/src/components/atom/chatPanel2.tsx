@@ -27,7 +27,7 @@ function stringifyDate(date: Date): string {
 
 export function ChatPanel2() {
   const { userProfile } = useUserProfile();
-  const { socket, messages, sendMessage } = useSocket();
+  const { messages, sendMessage } = useSocket();
   const [text, setText] = useState("");
 
   const scrollAreaRef = useRef<HTMLDivElement>(null);
@@ -65,11 +65,12 @@ export function ChatPanel2() {
   return (
     <div className="w-[300px] flex flex-col">
       <div className="p-4 border-b">
-        <Select>
+        <Select defaultValue="all">
           <SelectTrigger>
-            <SelectValue placeholder="Island / Town / Group" />
+            <SelectValue />
           </SelectTrigger>
           <SelectContent>
+            <SelectItem value="all">All</SelectItem>
             <SelectItem value="island">Island</SelectItem>
             <SelectItem value="town">Town</SelectItem>
             <SelectItem value="group">Group</SelectItem>

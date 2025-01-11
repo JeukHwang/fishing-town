@@ -14,10 +14,7 @@ const useSocket = () => {
       transports: ["websocket"],
     });
     setSocket(newSocket);
-
-    return () => {
-      newSocket.disconnect();
-    };
+    return () => void newSocket.disconnect();
   }, []);
 
   useEffect(() => {
@@ -26,7 +23,7 @@ const useSocket = () => {
       const converted: Message = { sender, text, date: new Date(date) };
       setMessages((prevMessages) => [...prevMessages, converted]);
     });
-    socket.emit("auth_check");
+    socket.emit("auth");
   }, [socket]);
 
   const sendMessage = (message: string) => {

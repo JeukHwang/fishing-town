@@ -1,8 +1,9 @@
-import { UseGuards } from "@nestjs/common";
+import { Logger, UseGuards } from "@nestjs/common";
 import {
+  ConnectedSocket,
+  MessageBody,
   OnGatewayConnection,
   OnGatewayDisconnect,
-  OnGatewayInit,
   SubscribeMessage,
   WebSocketGateway,
   WebSocketServer,
@@ -26,65 +27,48 @@ const systemProfile: UserProfile = {
 };
 
 @WebSocketGateway(corsOptions)
-export class ChatGateway
-  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
+  private readonly logger = new Logger("ChatGateway");
+
   @WebSocketServer()
   server!: Server;
 
-  private users = new Set<string>();
+  private users: Record<string, UserProfile> = {};
 
-  afterInit(_server: Server) {
-    console.log("WebSocket Initialized");
+  handleConnection(@ConnectedSocket() client: Socket) {
+    this.logger.log(`Connect: ${client.id}`);
   }
 
-  handleConnection(client: Socket) {
-    console.log(`Client connected: ${client.id}`);
+  @UseGuards(JwtAccessGuard)
+  @SubscribeMessage("auth")
+  auth(@ConnectedSocket() client: SocketWithUser) {
+    this.users[client.id] = toUserProfile(client.user); // TODO: maybe need to save only id and fetch user info when needed
     this.server.emit("receive_message", {
       sender: systemProfile,
-      text: `${client.id} joined`,
+      text: `${client.user.name} connected`,
       date: new Date(),
     } as Message);
   }
 
-  handleDisconnect(client: Socket) {
-    console.log(`Client disconnected: ${client.id}`);
-    this.users.delete(client.id);
-    this.server.emit("users", Array.from(this.users));
+  handleDisconnect(@ConnectedSocket() client: Socket) {
+    this.logger.log(`Disconnect: ${client.id}`);
     this.server.emit("receive_message", {
       sender: systemProfile,
-      text: `${client.id} left`,
+      text: `${this.users[client.id]?.name ?? "Anonymous"} disconnected`,
       date: new Date(),
     } as Message);
-  }
-
-  @SubscribeMessage("sendMessage")
-  handleMessage(_client: Socket, message: { sender: string; text: string }) {
-    this.server.emit("receiveMessage", message); // Broadcast message to all clients
-  }
-
-  @SubscribeMessage("join")
-  handleJoin(_client: Socket, username: string) {
-    this.users.add(username);
-    this.server.emit("users", Array.from(this.users));
+    delete this.users[client.id];
   }
 
   @UseGuards(JwtAccessGuard)
   @SubscribeMessage("send_message")
-  send_message(client: SocketWithUser, text: string) {
+  send_message(
+    @ConnectedSocket() client: SocketWithUser,
+    @MessageBody() text: string
+  ) {
     this.server.emit("receive_message", {
       sender: toUserProfile(client.user),
       text,
-      date: new Date(),
-    } as Message);
-  }
-
-  @UseGuards(JwtAccessGuard)
-  @SubscribeMessage("auth_check")
-  send_message_auth(client: SocketWithUser) {
-    this.server.emit("receive_message", {
-      sender: systemProfile,
-      text: `${client.id} authorized as ${client.user.name}`,
       date: new Date(),
     } as Message);
   }
