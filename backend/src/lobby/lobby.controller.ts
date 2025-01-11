@@ -12,9 +12,9 @@ export class LobbyController {
   async create(
     @Body() body: CreateLobbyDto,
     @CurrentUser() user: User
-  ): Promise<LobbyProfile> {
+  ): Promise<LobbyProfile | null> {
     const lobby = await this.lobbyService.create(body, user);
-    return toLobbyProfile(lobby);
+    return lobby ? toLobbyProfile(lobby) : null;
   }
 
   // TODO: enable only one of join and leave; so unfinished game for each user should be unique
@@ -22,18 +22,29 @@ export class LobbyController {
   async join(
     @Param("id") id: string,
     @CurrentUser() user: User
-  ): Promise<LobbyProfile> {
+  ): Promise<LobbyProfile | null> {
     const lobby = await this.lobbyService.join(id, user);
-    return toLobbyProfile(lobby);
+    return lobby ? toLobbyProfile(lobby) : null;
   }
 
   @Get("leave/:id")
   async leave(
     @Param("id") id: string,
     @CurrentUser() user: User
-  ): Promise<LobbyProfile> {
+  ): Promise<LobbyProfile | null> {
     const lobby = await this.lobbyService.leave(id, user);
-    return toLobbyProfile(lobby);
+    return lobby ? toLobbyProfile(lobby) : null;
+  }
+
+  @Get("start")
+  async start(@CurrentUser() user: User): Promise<boolean> {
+    return await this.lobbyService.start(user);
+  }
+
+  @Get("find/current")
+  async current(@CurrentUser() user: User): Promise<LobbyProfile | null> {
+    const lobby = await this.lobbyService.current(user);
+    return lobby ? toLobbyProfile(lobby) : null;
   }
 
   @Get("find/all")
@@ -45,12 +56,6 @@ export class LobbyController {
   @Get("find/:id")
   async find(@Param("id") id: string): Promise<LobbyProfile | null> {
     const lobby = await this.lobbyService.find(id);
-    return lobby ? toLobbyProfile(lobby) : null;
-  }
-
-  @Get("current")
-  async current(@CurrentUser() user: User): Promise<LobbyProfile | null> {
-    const lobby = await this.lobbyService.current(user);
     return lobby ? toLobbyProfile(lobby) : null;
   }
 }

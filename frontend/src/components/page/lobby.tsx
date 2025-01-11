@@ -33,23 +33,33 @@ export function Lobby() {
 
   const joinLobby = useCallback(
     async (id: string) => {
-      void fetch(`${domain}/lobby/join/${id}`, {
+      const response = await fetch(`${domain}/lobby/join/${id}`, {
         method: "GET",
         ...defaultHeader,
       });
-      fetchLobbies();
-      await navigate(`/game/${id}`);
+      const data = (await response.json()) as LobbyProfile | null;
+      if (data) {
+        fetchLobbies();
+        await navigate(`/game/${id}`);
+      } else {
+        alert("Failed to join room");
+      }
     },
     [navigate, fetchLobbies]
   );
 
   const leaveLobby = useCallback(
-    (id: string) => {
-      void fetch(`${domain}/lobby/leave/${id}`, {
+    async (id: string) => {
+      const response = await fetch(`${domain}/lobby/leave/${id}`, {
         method: "GET",
         ...defaultHeader,
       });
-      fetchLobbies();
+      const data = (await response.json()) as LobbyProfile | null;
+      if (data) {
+        fetchLobbies();
+      } else {
+        alert("Failed to leave room");
+      }
     },
     [fetchLobbies]
   );
@@ -88,7 +98,7 @@ export function Lobby() {
                   ) ? (
                     <Button
                       onClick={() => {
-                        leaveLobby(lobby.id);
+                        void leaveLobby(lobby.id);
                       }}
                     >
                       Leave
@@ -96,7 +106,7 @@ export function Lobby() {
                   ) : (
                     <Button
                       onClick={() => {
-                        joinLobby(lobby.id);
+                        void joinLobby(lobby.id);
                       }}
                     >
                       Join

@@ -25,6 +25,7 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Layout } from "./layout/layoutHeader";
 
+/** @deprecated */
 export function Lobby() {
   const [lobbies, setLobbies] = useState<LobbyProfile[]>([]);
   useEffect(() => {

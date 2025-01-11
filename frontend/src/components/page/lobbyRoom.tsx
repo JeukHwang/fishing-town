@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
+/** @deprecated */
 export function LobbyRoom() {
   const [lobbies, setLobbies] = useState<LobbyProfile[]>([]);
   useEffect(() => {

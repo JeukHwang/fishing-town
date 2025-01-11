@@ -22,11 +22,16 @@ import Profile from "@/components/atom/profile";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { UserProfile } from "@/core";
+import { GameState, LobbyProfile } from "@/core/prisma";
 import useSocket from "@/hooks/use-socket";
 import { useUserProfile } from "@/hooks/use-user";
-import { cn, redirectAfterLogin } from "@/lib/utils";
+import { Message } from "@/lib/shared";
+import { cn, defaultHeader, domain, redirectAfterLogin } from "@/lib/utils";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { LayoutCenter } from "../layout/layoutCenter";
+import { Create } from "./create";
+import { Join } from "./join";
 
 const leaderboard: ({
   ranking: string;
@@ -174,18 +179,13 @@ interface Params {
 // const socket = io(domain);
 //   , { withCredentials: true });
 
-export function Game() {
-  const { id } = useParams() as unknown as Params;
-  const { messages, sendMessage } = useSocket(id);
+interface InGameProps {
+  id: string;
+  messages: Message[];
+  sendMessage: (message: string) => void;
+}
 
-  const { userProfile } = useUserProfile({ auth: true });
-  const navigate = useNavigate();
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (userProfile === null) {
-    console.log(redirectAfterLogin(window.location.pathname));
-    void navigate(redirectAfterLogin(window.location.pathname));
-  }
-
+function InGame({ id, messages, sendMessage }: InGameProps) {
   return (
     <LayoutCenter>
       <div className="h-screen flex justify-center items-end bg-gray-100">
@@ -211,5 +211,67 @@ export function Game() {
         </div>
       </div>
     </LayoutCenter>
+  );
+}
+
+export function Game() {
+  const { id } = useParams() as unknown as Params;
+
+  const navigate = useNavigate();
+  const { userProfile } = useUserProfile();
+  useEffect(() => {
+    if (userProfile === null) {
+      void navigate(redirectAfterLogin(window.location.pathname));
+    }
+  }, [navigate, userProfile]);
+
+  const [game, setGame] = useState<LobbyProfile | null>(null);
+
+  useEffect(() => {
+    void (async () => {
+      const response1 = await fetch(`${domain}/lobby/find/${id}`, {
+        method: "GET",
+        ...defaultHeader,
+      });
+      const data1 = (await response1.json()) as LobbyProfile | null;
+      if (data1 === null) {
+        // Not found
+        void navigate("/lobby");
+      } else {
+        if (data1.status === GameState.Completion) {
+          // Replay
+          // TODO: Still need to check if the user was a participant or not?
+          setGame(data1);
+        } else {
+          // Participate
+
+          const response2 = await fetch(`${domain}/lobby/find/current`, {
+            method: "GET",
+            ...defaultHeader,
+          });
+          const data2 = (await response2.json()) as LobbyProfile | null;
+          if (data2 === null || data2.id !== id) {
+            void navigate("/lobby");
+          } else {
+            // good to go
+            setGame(data2);
+          }
+        }
+      }
+    })();
+  }, [id, navigate]);
+
+  const { messages, sendMessage } = useSocket(id);
+
+  return game ? (
+    {
+      Preparation: game.host.id === userProfile?.id ? <Create /> : <Join />,
+      Progress: (
+        <InGame id={id} messages={messages} sendMessage={sendMessage} />
+      ),
+      Completion: <LayoutCenter>Game Over: {id}</LayoutCenter>,
+    }[game.status]
+  ) : (
+    <LayoutCenter>Loading...</LayoutCenter>
   );
 }

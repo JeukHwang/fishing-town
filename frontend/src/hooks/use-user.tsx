@@ -75,6 +75,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// TODO: remove auth
 // TODO: remembe this good practice!!!!!
 // eslint-disable-next-line react-refresh/only-export-components
 export function useUserProfile<Auth extends boolean>(
