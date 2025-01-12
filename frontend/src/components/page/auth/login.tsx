@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useUserProfile } from "@/hooks/use-user";
-import { defaultHeader, domain } from "@/lib/utils";
+import { rawApi } from "@/lib/utils";
 import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Layout } from "../layout/layoutHeader";
@@ -17,10 +17,9 @@ export function Login() {
   const signIn = useCallback(() => {
     void (async () => {
       if (!(email && password)) return;
-      const responseLogin = await fetch(`${domain}/auth/signin`, {
+      const responseLogin = await rawApi(`auth/signin`, {
         method: "POST",
         body: JSON.stringify({ email, password }),
-        ...defaultHeader,
       });
       if (!responseLogin.ok) {
         console.log(await responseLogin.json());

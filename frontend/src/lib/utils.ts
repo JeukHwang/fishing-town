@@ -13,7 +13,7 @@ export const domain = isDev
   ? "http://localhost:3000"
   : "https://api.fishing-town.jeuk.io";
 
-export const defaultHeader = {
+const defaultHeader = {
   headers: { "Content-Type": "application/json" },
   credentials: "include",
 } as const;
@@ -54,10 +54,16 @@ export function hashToColor(input: string): string {
     .toUpperCase()}`;
 }
 
-export async function api<T>(url: string, init: RequestInit): Promise<T> {
-  const response = await fetch(`${domain}/${url}`, {
+export async function rawApi(
+  url: string,
+  init: RequestInit
+): Promise<Response> {
+  return await fetch(`${domain}/${url}`, {
     ...init,
     ...defaultHeader,
   });
-  return (await response.json()) as T;
+}
+
+export async function api<T>(url: string, init: RequestInit): Promise<T> {
+  return (await (await rawApi(url, init)).json()) as T;
 }

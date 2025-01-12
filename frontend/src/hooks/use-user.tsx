@@ -1,5 +1,5 @@
 import { UserProfile } from "@/core";
-import { api, defaultHeader, domain } from "@/lib/utils";
+import { rawApi } from "@/lib/utils";
 import {
   Context,
   createContext,
@@ -35,10 +35,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   }, [userProfile]);
 
   const fetchUserProfile = useCallback(async () => {
-    const response = await fetch(`${domain}/auth/status`, {
-      method: "GET",
-      ...defaultHeader,
-    });
+    const response = await rawApi(`$auth/status`, { method: "GET" });
     if (response.ok) {
       const data = (await response.json()) as UserProfile;
       setUserProfile(data);
@@ -49,9 +46,9 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void (async () => {
-      await api("auth/refresh", { method: "GET" });
+      await rawApi("auth/refresh", { method: "GET" });
       setInterval(() => {
-        void api("auth/refresh", { method: "GET" });
+        void rawApi("auth/refresh", { method: "GET" });
         console.log("refreshed");
       }, 20 * 60 * 1000);
 

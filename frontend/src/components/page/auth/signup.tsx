@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserProfile } from "@/core";
-import { defaultHeader, domain } from "@/lib/utils";
+import { rawApi } from "@/lib/utils";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Layout } from "../layout/layoutHeader";
@@ -54,10 +54,9 @@ export function SignUp() {
           onClick={() => {
             void (async () => {
               if (!(email && password && name)) return;
-              const responseSignup = await fetch(`${domain}/auth/signup`, {
+              const responseSignup = await rawApi(`auth/signup`, {
                 method: "POST",
                 body: JSON.stringify({ email, password, name }),
-                ...defaultHeader,
               });
               if (!responseSignup.ok) {
                 alert("Failed to sign up");
@@ -65,10 +64,9 @@ export function SignUp() {
               }
               const userProfile = (await responseSignup.json()) as UserProfile;
               console.log(userProfile);
-              const responseLogin = await fetch(`${domain}/auth/signin`, {
+              const responseLogin = await rawApi(`auth/signin`, {
                 method: "POST",
                 body: JSON.stringify({ email, password }),
-                ...defaultHeader,
               });
               if (!responseLogin.ok) {
                 alert("Failed to sign in");
