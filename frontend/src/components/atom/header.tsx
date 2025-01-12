@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useUserProfile } from "@/hooks/use-user";
-import { defaultHeader, domain } from "@/lib/utils";
+import { api } from "@/lib/utils";
 import { useCallback } from "react";
 import { Link, useNavigate } from "react-router";
 import RegionIcon from "./icon";
@@ -11,10 +11,7 @@ export default function Header() {
 
   const signOut = useCallback(() => {
     void (async () => {
-      await fetch(`${domain}/auth/signout`, {
-        method: "GET",
-        ...defaultHeader,
-      });
+      await api("auth/signout", { method: "GET" });
       await refreshUserProfile();
       await navigate("/");
     })();

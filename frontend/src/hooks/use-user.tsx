@@ -1,5 +1,5 @@
 import { UserProfile } from "@/core";
-import { defaultHeader, domain } from "@/lib/utils";
+import { api, defaultHeader, domain } from "@/lib/utils";
 import {
   Context,
   createContext,
@@ -49,15 +49,9 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void (async () => {
-      await fetch(`${domain}/auth/refresh`, {
-        method: "GET",
-        ...defaultHeader,
-      });
+      await api("auth/refresh", { method: "GET" });
       setInterval(() => {
-        void fetch(`${domain}/auth/refresh`, {
-          method: "GET",
-          ...defaultHeader,
-        });
+        void api("auth/refresh", { method: "GET" });
         console.log("refreshed");
       }, 20 * 60 * 1000);
 

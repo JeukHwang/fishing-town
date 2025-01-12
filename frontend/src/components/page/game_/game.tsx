@@ -26,7 +26,7 @@ import { GameState, LobbyProfile } from "@/core/prisma";
 import useSocket from "@/hooks/use-socket";
 import { useUserProfile } from "@/hooks/use-user";
 import { Message } from "@/lib/shared";
-import { cn, defaultHeader, domain, redirectAfterLogin } from "@/lib/utils";
+import { api, cn, redirectAfterLogin } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { LayoutCenter } from "../layout/layoutCenter";
@@ -229,32 +229,29 @@ export function Game() {
 
   useEffect(() => {
     void (async () => {
-      const response1 = await fetch(`${domain}/lobby/find/${id}`, {
+      const findById = await api<LobbyProfile | null>(`lobby/find/${id}`, {
         method: "GET",
-        ...defaultHeader,
       });
-      const data1 = (await response1.json()) as LobbyProfile | null;
-      if (data1 === null) {
+      if (findById === null) {
         // Not found
         void navigate("/lobby");
       } else {
-        if (data1.status === GameState.Completion) {
+        if (findById.status === GameState.Completion) {
           // Replay
           // TODO: Still need to check if the user was a participant or not?
-          setGame(data1);
+          setGame(findById);
         } else {
           // Participate
 
-          const response2 = await fetch(`${domain}/lobby/find/current`, {
-            method: "GET",
-            ...defaultHeader,
-          });
-          const data2 = (await response2.json()) as LobbyProfile | null;
-          if (data2 === null || data2.id !== id) {
+          const findByUser = await api<LobbyProfile | null>(
+            `lobby/find/current`,
+            { method: "GET" }
+          );
+          if (findByUser === null || findByUser.id !== id) {
             void navigate("/lobby");
           } else {
             // good to go
-            setGame(data2);
+            setGame(findByUser);
           }
         }
       }

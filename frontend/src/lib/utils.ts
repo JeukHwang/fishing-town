@@ -53,3 +53,11 @@ export function hashToColor(input: string): string {
     .slice(1)
     .toUpperCase()}`;
 }
+
+export async function api<T>(url: string, init: RequestInit): Promise<T> {
+  const response = await fetch(`${domain}/${url}`, {
+    ...init,
+    ...defaultHeader,
+  });
+  return (await response.json()) as T;
+}

@@ -18,7 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { LobbyProfile } from "@/core/prisma";
-import { defaultHeader, domain } from "@/lib/utils";
+import { api } from "@/lib/utils";
 import { RotateCcw } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
@@ -30,12 +30,9 @@ export function Lobby() {
   const [lobbies, setLobbies] = useState<LobbyProfile[]>([]);
   useEffect(() => {
     void (async () => {
-      const response = await fetch(`${domain}/lobby/find/all`, {
+      const data = await api<LobbyProfile[]>("lobby/find/all", {
         method: "GET",
-        ...defaultHeader,
       });
-      const data = (await response.json()) as LobbyProfile[];
-      console.log({ data });
       setLobbies(data);
     })();
   }, []);
@@ -44,24 +41,21 @@ export function Lobby() {
   const [description, setDescription] = useState("");
 
   const createLobby = useCallback(() => {
-    void fetch(`${domain}/lobby/create`, {
+    void api("lobby/create", {
       method: "POST",
       body: JSON.stringify({ name, description }),
-      ...defaultHeader,
     });
   }, [name, description]);
 
   const joinLobby = useCallback((id: string) => {
-    void fetch(`${domain}/lobby/join/${id}`, {
+    void api(`lobby/join/${id}`, {
       method: "GET",
-      ...defaultHeader,
     });
   }, []);
 
   const leaveLobby = useCallback((id: string) => {
-    void fetch(`${domain}/lobby/leave/${id}`, {
+    void api(`lobby/leave/${id}`, {
       method: "GET",
-      ...defaultHeader,
     });
   }, []);
 

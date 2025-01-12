@@ -1,7 +1,7 @@
 import Profile from "@/components/atom/profile";
 import { LobbyProfile } from "@/core/prisma";
 import { useUserProfile } from "@/hooks/use-user";
-import { defaultHeader, domain, redirectAfterLogin } from "@/lib/utils";
+import { api, redirectAfterLogin } from "@/lib/utils";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Button } from "../ui/button";
@@ -17,12 +17,9 @@ export function Lobby() {
 
   const fetchLobbies = useCallback(() => {
     void (async () => {
-      const response = await fetch(`${domain}/lobby/find/all`, {
+      const data = await api<LobbyProfile[]>("lobby/find/all", {
         method: "GET",
-        ...defaultHeader,
       });
-      const data = (await response.json()) as LobbyProfile[];
-      console.log(data);
       setLobbies(data);
     })();
   }, []);
@@ -33,11 +30,9 @@ export function Lobby() {
 
   const joinLobby = useCallback(
     async (id: string) => {
-      const response = await fetch(`${domain}/lobby/join/${id}`, {
+      const data = await api<LobbyProfile | null>(`lobby/join/${id}`, {
         method: "GET",
-        ...defaultHeader,
       });
-      const data = (await response.json()) as LobbyProfile | null;
       if (data) {
         fetchLobbies();
         await navigate(`/game/${id}`);
@@ -50,11 +45,9 @@ export function Lobby() {
 
   const leaveLobby = useCallback(
     async (id: string) => {
-      const response = await fetch(`${domain}/lobby/leave/${id}`, {
+      const data = await api<LobbyProfile | null>(`lobby/leave/${id}`, {
         method: "GET",
-        ...defaultHeader,
       });
-      const data = (await response.json()) as LobbyProfile | null;
       if (data) {
         fetchLobbies();
       } else {

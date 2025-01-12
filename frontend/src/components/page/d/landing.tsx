@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LobbyProfile } from "@/core/prisma";
 import { useUserProfile } from "@/hooks/use-user";
-import { domain } from "@/lib/utils";
+import { api } from "@/lib/utils";
 import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Layout } from "../layout/layoutHeader";
@@ -27,7 +27,7 @@ function CreateRoom() {
   const create = useCallback(() => {
     if (title === "" || description === "") return;
     void (async () => {
-      const response = await fetch(`${domain}/lobby/create`, {
+      const data = await api<LobbyProfile | null>("lobby/create", {
         method: "POST",
         body: JSON.stringify({
           title,
@@ -35,7 +35,6 @@ function CreateRoom() {
           password: password !== "" ? password : null,
         }),
       });
-      const data = (await response.json()) as LobbyProfile | null;
       if (data) {
         await navigate(`/game/${data.id}`);
       } else {
