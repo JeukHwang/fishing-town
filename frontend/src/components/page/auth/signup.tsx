@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserProfile } from "@/core";
+import { useUserProfile } from "@/hooks/use-user";
 import { rawApi } from "@/lib/utils";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Layout } from "../layout/layoutHeader";
 
 export function SignUp() {
+  const { signIn } = useUserProfile();
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -62,18 +63,12 @@ export function SignUp() {
                 alert("Failed to sign up");
                 return;
               }
-              const userProfile = (await responseSignup.json()) as UserProfile;
-              console.log(userProfile);
-              const responseLogin = await rawApi(`auth/signin`, {
-                method: "POST",
-                body: JSON.stringify({ email, password }),
-              });
-              if (!responseLogin.ok) {
+              const isSucceed = await signIn(email, password);
+              if (isSucceed) {
+                await navigate("/");
+              } else {
                 alert("Failed to sign in");
-                return;
               }
-
-              await navigate("/");
             })();
           }}
         >

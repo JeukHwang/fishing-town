@@ -65,5 +65,11 @@ export async function rawApi(
 }
 
 export async function api<T>(url: string, init: RequestInit): Promise<T> {
-  return (await (await rawApi(url, init)).json()) as T;
+  const response = await rawApi(url, init);
+  const text = await response.text();
+  if (text === "") {
+    return null as T;
+  } else {
+    return JSON.parse(text) as T;
+  }
 }

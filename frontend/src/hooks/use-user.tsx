@@ -12,27 +12,19 @@ import {
 
 interface ContextProps<Auth extends boolean> {
   userProfile: Auth extends true ? UserProfile : UserProfile | null;
-  refreshUserProfile: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<boolean>;
+  signOut: () => Promise<void>;
 }
 
 const UserProfileContext = createContext<ContextProps<false>>({
   userProfile: null,
+  signIn: () => new Promise(() => false),
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  refreshUserProfile: async () => {},
+  signOut: () => new Promise(() => {}),
 });
 
 export function UserProfileProvider({ children }: { children: ReactNode }) {
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(
-    () =>
-      JSON.parse(
-        "null"
-        // localStorage.getItem("userProfile") ?? "null"
-      ) as UserProfile | null
-  );
-
-  useEffect(() => {
-    // localStorage.setItem("userProfile", JSON.stringify(userProfile));
-  }, [userProfile]);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 
   const fetchUserProfile = useCallback(async () => {
     const response = await rawApi(`auth/status`, { method: "GET" });
@@ -45,21 +37,40 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    void (async () => {
-      await rawApi("auth/refresh", { method: "GET" });
-      setInterval(() => {
-        void rawApi("auth/refresh", { method: "GET" });
-        console.log("refreshed");
-      }, 20 * 60 * 1000);
+    void fetchUserProfile();
+    setInterval(() => {
+      void (async () => {
+        await rawApi("auth/refresh", { method: "GET" });
+        await fetchUserProfile();
+      })();
+    }, 20 * 60 * 1000);
+  }, [fetchUserProfile]);
 
-      if (!userProfile) await fetchUserProfile();
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const signIn = async (email: string, password: string): Promise<boolean> => {
+    const response = await rawApi(`auth/signin`, {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    });
+    if (response.ok) {
+      await fetchUserProfile();
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const signOut = async () => {
+    await rawApi(`auth/signout`, { method: "GET" });
+    setUserProfile(null);
+  };
 
   return (
     <UserProfileContext.Provider
-      value={{ userProfile, refreshUserProfile: fetchUserProfile }}
+      value={{
+        userProfile,
+        signIn,
+        signOut,
+      }}
     >
       {children}
     </UserProfileContext.Provider>

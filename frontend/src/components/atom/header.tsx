@@ -1,21 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { useUserProfile } from "@/hooks/use-user";
-import { rawApi } from "@/lib/utils";
 import { useCallback } from "react";
 import { Link, useNavigate } from "react-router";
 import RegionIcon from "./icon";
 
 export default function Header() {
+  const { userProfile, signOut } = useUserProfile();
   const navigate = useNavigate();
-  const { userProfile, refreshUserProfile } = useUserProfile();
-
-  const signOut = useCallback(() => {
+  const logout = useCallback(() => {
     void (async () => {
-      await rawApi("auth/signout", { method: "GET" });
-      await refreshUserProfile();
-      await navigate("/");
+      await signOut();
+      await navigate("./");
     })();
-  }, [navigate, refreshUserProfile]);
+  }, [navigate, signOut]);
 
   return (
     <div className="w-full p-8 bg-white border-b border-[#d9d9d9] flex items-center justify-start gap-6">
@@ -35,7 +32,7 @@ export default function Header() {
       </div>
       {userProfile ? (
         <div className="flex items-center justify-start gap-3">
-          <Button variant="outline" onClick={signOut}>
+          <Button variant="outline" onClick={logout}>
             Log Out
           </Button>
           <Link to="/account">
