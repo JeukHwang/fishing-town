@@ -30,7 +30,7 @@ export class LobbyService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async create(
-    { name, description, password }: CreateLobbyDto,
+    { title, description, password }: CreateLobbyDto,
     user: User
   ): Promise<LobbyWithUser | null> {
     const current = await this.current(user);
@@ -38,7 +38,7 @@ export class LobbyService {
 
     return await this.prismaService.lobby.create({
       data: {
-        name,
+        title,
         description,
         password: password ?? null,
         hostId: user.id,

@@ -1,5 +1,5 @@
 export class CreateLobbyDto {
-  name!: string;
+  title!: string;
   description!: string;
   password?: string;
 }
