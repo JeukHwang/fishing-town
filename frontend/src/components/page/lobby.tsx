@@ -43,19 +43,16 @@ export function Lobby() {
     [navigate, fetchLobbies]
   );
 
-  const leaveLobby = useCallback(
-    async (id: string) => {
-      const data = await api<LobbyProfile | null>(`lobby/leave/${id}`, {
-        method: "GET",
-      });
-      if (data) {
-        fetchLobbies();
-      } else {
-        alert("Failed to leave room");
-      }
-    },
-    [fetchLobbies]
-  );
+  const leaveLobby = useCallback(async () => {
+    const data = await api<LobbyProfile | null>(`lobby/leave`, {
+      method: "GET",
+    });
+    if (data) {
+      fetchLobbies();
+    } else {
+      alert("Failed to leave room");
+    }
+  }, [fetchLobbies]);
 
   return (
     <Layout>
@@ -91,7 +88,7 @@ export function Lobby() {
                   ) ? (
                     <Button
                       onClick={() => {
-                        void leaveLobby(lobby.id);
+                        void leaveLobby();
                       }}
                     >
                       Leave

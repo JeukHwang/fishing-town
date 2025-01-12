@@ -74,6 +74,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DefaultRule } from "@/core";
+import { api } from "@/lib/utils";
+import { useNavigate } from "react-router";
 
 type Props = object;
 
@@ -251,6 +253,7 @@ function AlertDialogDemo({ children }: PropsWithChildren<Props>) {
   );
 }
 export function Create() {
+  const navigate = useNavigate();
   const [classModeEnabled, setClassModeEnabled] = useState(false);
 
   return (
@@ -386,6 +389,17 @@ export function Create() {
             </div>
 
             <Button className="w-full mt-4">Start</Button>
+            <Button
+              className="w-full mt-4"
+              onClick={() => {
+                void (async () => {
+                  await api("lobby/destroy", { method: "GET" });
+                  await navigate("/lobby"); // TODO: how to kick all participants?
+                })();
+              }}
+            >
+              Destroy
+            </Button>
             <RulePreview />
           </div>
         </div>

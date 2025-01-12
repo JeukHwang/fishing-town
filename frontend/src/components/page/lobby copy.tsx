@@ -53,8 +53,8 @@ export function Lobby() {
     });
   }, []);
 
-  const leaveLobby = useCallback((id: string) => {
-    void api(`lobby/leave/${id}`, {
+  const leaveLobby = useCallback(() => {
+    void api(`lobby/leave`, {
       method: "GET",
     });
   }, []);
@@ -122,7 +122,7 @@ export function Lobby() {
                   </Button>
                   <Button
                     onClick={() => {
-                      leaveLobby(lobby.id);
+                      leaveLobby();
                     }}
                   >
                     Leave

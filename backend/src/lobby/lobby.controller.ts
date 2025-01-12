@@ -27,18 +27,20 @@ export class LobbyController {
     return lobby ? toLobbyProfile(lobby) : null;
   }
 
-  @Get("leave/:id")
-  async leave(
-    @Param("id") id: string,
-    @CurrentUser() user: User
-  ): Promise<LobbyProfile | null> {
-    const lobby = await this.lobbyService.leave(id, user);
+  @Get("leave")
+  async leave(@CurrentUser() user: User): Promise<LobbyProfile | null> {
+    const lobby = await this.lobbyService.leave(user);
     return lobby ? toLobbyProfile(lobby) : null;
   }
 
   @Get("start")
   async start(@CurrentUser() user: User): Promise<boolean> {
     return await this.lobbyService.start(user);
+  }
+
+  @Get("destroy")
+  async destroy(@CurrentUser() user: User): Promise<boolean> {
+    return await this.lobbyService.destroy(user);
   }
 
   @Get("find/current")

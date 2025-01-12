@@ -65,16 +65,13 @@ export class LobbyService {
     });
   }
 
-  async leave(id: string, user: User): Promise<LobbyWithUser | null> {
-    const lobby = await this.find(id);
+  async leave(user: User): Promise<LobbyWithUser | null> {
+    const lobby = await this.current(user);
     if (lobby === null) return null;
     if (lobby.status !== GameState.Preparation) return null;
 
-    const current = await this.current(user);
-    if (current === null || current.id !== id) return null;
-
     return await this.prismaService.lobby.update({
-      where: { id },
+      where: { id: lobby.id },
       data: { participants: { disconnect: { id: user.id } } },
       include: { host: true, participants: true },
     });
@@ -119,6 +116,15 @@ export class LobbyService {
       where: { id: lobby.id },
       data: { status: GameState.Progress },
     });
+
+    return true;
+  }
+
+  async destroy(user: User): Promise<boolean> {
+    const lobby = await this.current(user);
+    if (lobby === null || lobby.hostId !== user.id) return false;
+
+    await this.prismaService.lobby.delete({ where: { id: lobby.id } });
 
     return true;
   }
