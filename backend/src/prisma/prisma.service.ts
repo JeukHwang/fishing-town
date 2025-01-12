@@ -40,19 +40,20 @@ export class PrismaService
       //   console.log(`Result ${JSON.stringify(result)}`);
       return result;
     });
-    this.$use(async function softDeleteMiddleware(params, next) {
-      switch (params.action) {
-        case "delete":
-          params.action = "update";
-          params.args["data"] = { deletedAt: new Date() };
-          break;
-        case "deleteMany":
-          params.action = "updateMany";
-          params.args["data"] = { deletedAt: new Date() };
-          break;
-      }
-      return next(params);
-    });
+    // TODO: enable soft delete
+    // this.$use(async function softDeleteMiddleware(params, next) {
+    //   switch (params.action) {
+    //     case "delete":
+    //       params.action = "update";
+    //       params.args["data"] = { deletedAt: new Date() };
+    //       break;
+    //     case "deleteMany":
+    //       params.action = "updateMany";
+    //       params.args["data"] = { deletedAt: new Date() };
+    //       break;
+    //   }
+    //   return next(params);
+    // });
     // this.$use(async function softDeleteMiddleware(params, next) {
     //   switch (params.action) {
     //     case "findUnique":
