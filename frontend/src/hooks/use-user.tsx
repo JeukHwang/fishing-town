@@ -35,7 +35,7 @@ export function UserProfileProvider({ children }: { children: ReactNode }) {
   }, [userProfile]);
 
   const fetchUserProfile = useCallback(async () => {
-    const response = await rawApi(`$auth/status`, { method: "GET" });
+    const response = await rawApi(`auth/status`, { method: "GET" });
     if (response.ok) {
       const data = (await response.json()) as UserProfile;
       setUserProfile(data);
