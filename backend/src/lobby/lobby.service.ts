@@ -8,7 +8,7 @@ type LobbyWithUser = Lobby & { host: User; participants: User[] };
 
 export type LobbyProfile = Pick<
   Lobby,
-  "id" | "name" | "description" | "status"
+  "id" | "title" | "description" | "status"
 > & {
   host: UserProfile;
   participants: UserProfile[];
@@ -17,7 +17,7 @@ export type LobbyProfile = Pick<
 export function toLobbyProfile(lobby: LobbyWithUser): LobbyProfile {
   return {
     id: lobby.id,
-    name: lobby.name,
+    title: lobby.title,
     description: lobby.description,
     status: lobby.status,
     host: toUserProfile(lobby.host),
